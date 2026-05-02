@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "Nuncius voter agents",
   "scripts": {
-    "start:1": "AGENT_INDEX=1 AXL_API_URL=http://127.0.0.1:10001 HTTP_PORT=4001 ts-node voter/src/index.ts",
-    "start:2": "AGENT_INDEX=2 AXL_API_URL=http://127.0.0.1:10002 HTTP_PORT=4002 ts-node voter/src/index.ts",
-    "start:3": "AGENT_INDEX=3 AXL_API_URL=http://127.0.0.1:10003 HTTP_PORT=4003 ts-node voter/src/index.ts",
-    "start:4": "AGENT_INDEX=4 AXL_API_URL=http://127.0.0.1:10004 HTTP_PORT=4004 ts-node voter/src/index.ts",
-    "start:5": "AGENT_INDEX=5 AXL_API_URL=http://127.0.0.1:10005 HTTP_PORT=4005 ts-node voter/src/index.ts",
-    "start:all": "concurrently -n Pythia,Ziggy,Beto,Hypatia,Ada -c blue,green,yellow,magenta,cyan \"npm:start:1\" \"npm:start:2\" \"npm:start:3\" \"npm:start:4\" \"npm:start:5\"",
+    "build": "tsc",
+    "start:1": "AGENT_INDEX=1 AXL_API_URL=http://127.0.0.1:10001 HTTP_PORT=4001 node dist/voter/src/index.js",
+    "start:2": "AGENT_INDEX=2 AXL_API_URL=http://127.0.0.1:10002 HTTP_PORT=4002 node dist/voter/src/index.js",
+    "start:3": "AGENT_INDEX=3 AXL_API_URL=http://127.0.0.1:10003 HTTP_PORT=4003 node dist/voter/src/index.js",
+    "start:4": "AGENT_INDEX=4 AXL_API_URL=http://127.0.0.1:10004 HTTP_PORT=4004 node dist/voter/src/index.js",
+    "start:5": "AGENT_INDEX=5 AXL_API_URL=http://127.0.0.1:10005 HTTP_PORT=4005 node dist/voter/src/index.js",
+    "start:all": "npm run build && concurrently -n Pythia,Ziggy,Beto,Hypatia,Ada -c blue,green,yellow,magenta,cyan \"npm:start:1\" \"npm:start:2\" \"npm:start:3\" \"npm:start:4\" \"npm:start:5\"",
     "trigger": "ts-node scripts/trigger-proposal.ts"
   },
   "dependencies": {

@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "demo": "next build && next start"
   },
   "dependencies": {
     "ethers": "^6.16.0",

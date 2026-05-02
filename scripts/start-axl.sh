@@ -32,9 +32,9 @@ sleep 1
 
 echo "Starting 5-node AXL mesh ..."
 for i in 1 2 3 4 5; do
-  CFG="$CONFIG_DIR/node-$i.json"
+  CFG="node-$i.json"
   LOG="$LOG_DIR/axl-$i.log"
-  "$AXL_BIN" -config "$CFG" > "$LOG" 2>&1 &
+  ( cd "$CONFIG_DIR" && "$AXL_BIN" -config "$CFG" > "$LOG" 2>&1 ) &
   PID=$!
   echo "$i $PID" >> "$PID_FILE"
   echo "  node $i started — pid $PID — log $LOG"

@@ -3,8 +3,17 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import * as dotenv from "dotenv";
 import * as path from "path";
+import * as fs from "fs";
 
-const REPO_ROOT = path.resolve(__dirname, "..", "..", "..");
+function findRepoRoot(start: string): string {
+  let dir = start;
+  while (dir !== path.dirname(dir)) {
+    if (fs.existsSync(path.join(dir, ".env")) && fs.existsSync(path.join(dir, "axl-src"))) return dir;
+    dir = path.dirname(dir);
+  }
+  throw new Error("repo root with .env + axl-src not found from " + start);
+}
+const REPO_ROOT = findRepoRoot(__dirname);
 dotenv.config({ path: path.join(REPO_ROOT, ".env") });
 dotenv.config({ path: path.join(REPO_ROOT, ".env.secrets") });
 

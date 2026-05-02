@@ -122,7 +122,7 @@ async function main() {
       "nuncius.agentIndex":    String(p.agentIndex),
       "nuncius.role":          "voter",
       "nuncius.dao":           daoAddress,
-      "url":                   "https://github.com/manzanal/delibera-on-0g",
+      "url":                   "https://github.com/leomanza/nuncius",
       "description":           `Nuncius anonymous voter — ${p.displayName} — anonymous DAO governance via Semaphore V4 on 0G Galileo`,
     };
     const textTxs: Record<string, string> = {};
