@@ -95,10 +95,13 @@ export async function callComputeInference(
     }), COMPUTE_TIMEOUT_MS, "0g compute fetch");
 
     if (!res.ok) throw new Error(`0G compute HTTP ${res.status}`);
+    const chatID = res.headers.get("ZG-Res-Key") || res.headers.get("zg-res-key") || undefined;
     const data: any = await res.json();
     const text = data.choices?.[0]?.message?.content || "";
+    const finalChatID = chatID || data.id;
+    const usage = data.usage ? JSON.stringify(data.usage) : undefined;
     // Fire-and-forget billing settle — don't block on it.
-    broker.inference.processResponse(provider.provider, data.id, text).catch(() => {});
+    broker.inference.processResponse(provider.provider, finalChatID, usage).catch(() => {});
     return { text, source: "0g-compute", provider: provider.provider, model, elapsedMs: Date.now() - t0 };
   } catch (err) {
     console.warn("[compute] 0G failed, falling back to Ollama:", String(err));

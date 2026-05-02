@@ -28,17 +28,17 @@ async function handleProposal(agentIndex, msg, daoAddress, setStatus, opts = {})
         description: payload.description,
         startedAt: Date.now(),
     });
-    await (0, _0g_kv_client_1.writeAgentState)(daoAddress, agentIndex, {
+    void (0, _0g_kv_client_1.writeAgentState)(daoAddress, agentIndex, {
         state: "deliberating",
         proposalId,
         description: payload.description,
         startedAt: Date.now(),
-    }).catch(() => { });
+    }).catch((e) => console.warn(`[${tag}] kv write (deliberating) failed:`, String(e)));
     const deliberation = await (0, deliberate_1.deliberate)(agentIndex, payload.description);
     console.log(`[${tag}] decision=${deliberation.decision} confidence=${deliberation.confidence.toFixed(2)} src=${deliberation.source} elapsed=${deliberation.elapsedMs}ms`);
     console.log(`[${tag}] reasoning: ${deliberation.reasoning}`);
     opts.onDeliberation?.(deliberation);
-    await (0, _0g_kv_client_1.writeAgentState)(daoAddress, agentIndex, {
+    void (0, _0g_kv_client_1.writeAgentState)(daoAddress, agentIndex, {
         state: "voting",
         proposalId,
         reasoning: deliberation.reasoning,
@@ -46,7 +46,7 @@ async function handleProposal(agentIndex, msg, daoAddress, setStatus, opts = {})
         decision: deliberation.decision,
         source: deliberation.source,
         updatedAt: Date.now(),
-    }).catch(() => { });
+    }).catch((e) => console.warn(`[${tag}] kv write (voting) failed:`, String(e)));
     setStatus({
         state: "voting",
         proposalId,
@@ -72,12 +72,12 @@ async function handleProposal(agentIndex, msg, daoAddress, setStatus, opts = {})
         const msg = err?.shortMessage || err?.message || String(err);
         console.error(`[${tag}] vote submission failed: ${msg}`);
         setStatus({ state: "error", proposalId, error: msg, updatedAt: Date.now() });
-        await (0, _0g_kv_client_1.writeAgentState)(daoAddress, agentIndex, {
+        void (0, _0g_kv_client_1.writeAgentState)(daoAddress, agentIndex, {
             state: "error",
             proposalId,
             error: msg,
             updatedAt: Date.now(),
-        }).catch(() => { });
+        }).catch((e) => console.warn(`[${tag}] kv write (error) failed:`, String(e)));
         return;
     }
     setStatus({
@@ -90,13 +90,13 @@ async function handleProposal(agentIndex, msg, daoAddress, setStatus, opts = {})
         source: deliberation.source,
         updatedAt: Date.now(),
     });
-    await (0, _0g_kv_client_1.writeAgentState)(daoAddress, agentIndex, {
+    void (0, _0g_kv_client_1.writeAgentState)(daoAddress, agentIndex, {
         state: "voted",
         proposalId,
         txHash: cast.txHash,
         decision: deliberation.decision,
         updatedAt: Date.now(),
-    }).catch(() => { });
+    }).catch((e) => console.warn(`[${tag}] kv write (voted) failed:`, String(e)));
     // ── 3) Notify the coordinator over AXL (does NOT reveal the vote) ─
     if (opts.coordinatorPeerId && opts.axl) {
         const ack = {

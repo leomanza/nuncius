@@ -21,7 +21,14 @@ const RPC_URL = process.env.RPC_URL || "https://evmrpc-testnet.0g.ai";
 const INDEXER_RPC = process.env.ZG_STORAGE_INDEXER || "https://indexer-storage-testnet-turbo.0g.ai";
 const KV_RPC = process.env.ZG_KV_RPC || "http://3.101.147.150:6789";
 const FLOW_ADDRESS = process.env.ZG_FLOW_ADDRESS || "0x22E03a6A89B950F1c82ec5e74F8eCa321a105296";
+const KV_WRITE_TIMEOUT_MS = parseInt(process.env.ZG_KV_WRITE_TIMEOUT_MS || "45000");
 const STATE_KEY = "state";
+async function withTimeout(p, ms, tag) {
+    return await Promise.race([
+        p,
+        new Promise((_, rej) => setTimeout(() => rej(new Error(`${tag} timed out after ${ms}ms`)), ms)),
+    ]);
+}
 function getStreamId(daoAddress, agentIndex) {
     if (!daoAddress)
         throw new Error("daoAddress required for stream id salting");
@@ -47,26 +54,29 @@ function getSigner() {
 }
 async function writeAgentState(daoAddress, agentIndex, state) {
     try {
-        const indexer = getIndexer();
-        const [nodes, err] = await indexer.selectNodes(1);
-        if (err !== null)
-            return { ok: false, error: `selectNodes: ${err}` };
-        const flow = (0, _0g_ts_sdk_1.getFlowContract)(FLOW_ADDRESS, getSigner());
-        const batcher = new _0g_ts_sdk_1.Batcher(1, nodes, flow, RPC_URL);
-        const streamId = getStreamId(daoAddress, agentIndex);
-        const keyBytes = Uint8Array.from(Buffer.from(STATE_KEY, "utf-8"));
-        const valueBytes = Uint8Array.from(Buffer.from(JSON.stringify({ ...state, agentIndex, updatedAt: Date.now() }), "utf-8"));
-        batcher.streamDataBuilder.set(streamId, keyBytes, valueBytes);
-        const [tx, batchErr] = await batcher.exec();
-        if (batchErr !== null)
-            return { ok: false, error: `exec: ${batchErr}` };
-        return { ok: true, tx: typeof tx === "string" ? tx : tx?.txHash || JSON.stringify(tx) };
+        return await withTimeout(doWrite(daoAddress, agentIndex, state), KV_WRITE_TIMEOUT_MS, "0g-kv write");
     }
     catch (err) {
         return { ok: false, error: err?.message || String(err) };
     }
 }
 exports.writeAgentState = writeAgentState;
+async function doWrite(daoAddress, agentIndex, state) {
+    const indexer = getIndexer();
+    const [nodes, err] = await indexer.selectNodes(1);
+    if (err !== null)
+        return { ok: false, error: `selectNodes: ${err}` };
+    const flow = (0, _0g_ts_sdk_1.getFlowContract)(FLOW_ADDRESS, getSigner());
+    const batcher = new _0g_ts_sdk_1.Batcher(1, nodes, flow, RPC_URL);
+    const streamId = getStreamId(daoAddress, agentIndex);
+    const keyBytes = Uint8Array.from(Buffer.from(STATE_KEY, "utf-8"));
+    const valueBytes = Uint8Array.from(Buffer.from(JSON.stringify({ ...state, agentIndex, updatedAt: Date.now() }), "utf-8"));
+    batcher.streamDataBuilder.set(streamId, keyBytes, valueBytes);
+    const [tx, batchErr] = await batcher.exec();
+    if (batchErr !== null)
+        return { ok: false, error: `exec: ${batchErr}` };
+    return { ok: true, tx: typeof tx === "string" ? tx : tx?.txHash || JSON.stringify(tx) };
+}
 async function readAgentState(daoAddress, agentIndex) {
     try {
         const kvClient = new _0g_ts_sdk_1.KvClient(KV_RPC);

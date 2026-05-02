@@ -8,9 +8,9 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY || "";
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: "0.8.23",
+    version: "0.8.27",
     settings: {
-      evmVersion: "london",
+      evmVersion: "cancun",
       optimizer: { enabled: true, runs: 200 },
     },
   },

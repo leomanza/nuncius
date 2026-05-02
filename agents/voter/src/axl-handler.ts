@@ -51,19 +51,19 @@ export async function handleProposal(
     description: payload.description,
     startedAt: Date.now(),
   });
-  await writeAgentState(daoAddress, agentIndex, {
+  void writeAgentState(daoAddress, agentIndex, {
     state: "deliberating",
     proposalId,
     description: payload.description,
     startedAt: Date.now(),
-  }).catch(() => {});
+  }).catch((e) => console.warn(`[${tag}] kv write (deliberating) failed:`, String(e)));
 
   const deliberation = await deliberate(agentIndex, payload.description);
   console.log(`[${tag}] decision=${deliberation.decision} confidence=${deliberation.confidence.toFixed(2)} src=${deliberation.source} elapsed=${deliberation.elapsedMs}ms`);
   console.log(`[${tag}] reasoning: ${deliberation.reasoning}`);
   opts.onDeliberation?.(deliberation);
 
-  await writeAgentState(daoAddress, agentIndex, {
+  void writeAgentState(daoAddress, agentIndex, {
     state: "voting",
     proposalId,
     reasoning: deliberation.reasoning,
@@ -71,7 +71,7 @@ export async function handleProposal(
     decision: deliberation.decision,
     source: deliberation.source as any,
     updatedAt: Date.now(),
-  }).catch(() => {});
+  }).catch((e) => console.warn(`[${tag}] kv write (voting) failed:`, String(e)));
   setStatus({
     state: "voting",
     proposalId,
@@ -100,12 +100,12 @@ export async function handleProposal(
     const msg = err?.shortMessage || err?.message || String(err);
     console.error(`[${tag}] vote submission failed: ${msg}`);
     setStatus({ state: "error", proposalId, error: msg, updatedAt: Date.now() });
-    await writeAgentState(daoAddress, agentIndex, {
+    void writeAgentState(daoAddress, agentIndex, {
       state: "error",
       proposalId,
       error: msg,
       updatedAt: Date.now(),
-    }).catch(() => {});
+    }).catch((e) => console.warn(`[${tag}] kv write (error) failed:`, String(e)));
     return;
   }
 
@@ -119,13 +119,13 @@ export async function handleProposal(
     source: deliberation.source as any,
     updatedAt: Date.now(),
   });
-  await writeAgentState(daoAddress, agentIndex, {
+  void writeAgentState(daoAddress, agentIndex, {
     state: "voted",
     proposalId,
     txHash: cast.txHash,
     decision: deliberation.decision,
     updatedAt: Date.now(),
-  }).catch(() => {});
+  }).catch((e) => console.warn(`[${tag}] kv write (voted) failed:`, String(e)));
 
   // ── 3) Notify the coordinator over AXL (does NOT reveal the vote) ─
   if (opts.coordinatorPeerId && opts.axl) {
