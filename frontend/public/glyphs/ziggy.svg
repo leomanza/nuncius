@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Supernova / cometary streak: 8-pointed star with trailing rays -->
+  <!-- core star -->
+  <path d="M32 14 L34 28 L48 30 L34 32 L32 46 L30 32 L16 30 L30 28 z" fill="currentColor" fill-opacity="0.25" />
+  <!-- inner cross -->
+  <path d="M32 14 L32 46" />
+  <path d="M16 30 L48 30" />
+  <!-- diagonal rays -->
+  <path d="M22 20 L42 40" stroke-opacity="0.55" />
+  <path d="M42 20 L22 40" stroke-opacity="0.55" />
+  <!-- comet trail (leading from upper-right corner toward star) -->
+  <path d="M58 8 Q46 16 38 24" stroke-opacity="0.7" />
+  <path d="M55 12 Q44 18 36 26" stroke-opacity="0.4" />
+  <!-- secondary stars (smaller, scattered) -->
+  <circle cx="12" cy="46" r="0.8" fill="currentColor" />
+  <circle cx="52" cy="50" r="0.8" fill="currentColor" />
+  <circle cx="14" cy="20" r="0.8" fill="currentColor" />
+</svg>

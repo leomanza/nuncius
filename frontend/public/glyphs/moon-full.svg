@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2">
+  <circle cx="16" cy="16" r="11" fill="currentColor" fill-opacity="0.92" />
+  <!-- maria spots — Galileo's lunar plates show shading -->
+  <circle cx="13" cy="13" r="1.5" fill="currentColor" fill-opacity="0.4" stroke="none" />
+  <circle cx="19" cy="18" r="2"   fill="currentColor" fill-opacity="0.45" stroke="none" />
+  <circle cx="14" cy="20" r="1"   fill="currentColor" fill-opacity="0.4" stroke="none" />
+</svg>

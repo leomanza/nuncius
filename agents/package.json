@@ -1,0 +1,31 @@
+{
+  "name": "agents",
+  "version": "1.0.0",
+  "description": "Nuncius voter agents",
+  "scripts": {
+    "start:1": "AGENT_INDEX=1 AXL_API_URL=http://127.0.0.1:10001 HTTP_PORT=4001 ts-node voter/src/index.ts",
+    "start:2": "AGENT_INDEX=2 AXL_API_URL=http://127.0.0.1:10002 HTTP_PORT=4002 ts-node voter/src/index.ts",
+    "start:3": "AGENT_INDEX=3 AXL_API_URL=http://127.0.0.1:10003 HTTP_PORT=4003 ts-node voter/src/index.ts",
+    "start:4": "AGENT_INDEX=4 AXL_API_URL=http://127.0.0.1:10004 HTTP_PORT=4004 ts-node voter/src/index.ts",
+    "start:5": "AGENT_INDEX=5 AXL_API_URL=http://127.0.0.1:10005 HTTP_PORT=4005 ts-node voter/src/index.ts",
+    "start:all": "concurrently -n Pythia,Ziggy,Beto,Hypatia,Ada -c blue,green,yellow,magenta,cyan \"npm:start:1\" \"npm:start:2\" \"npm:start:3\" \"npm:start:4\" \"npm:start:5\"",
+    "trigger": "ts-node scripts/trigger-proposal.ts"
+  },
+  "dependencies": {
+    "@0gfoundation/0g-ts-sdk": "^1.2.6",
+    "@0glabs/0g-serving-broker": "^0.7.5",
+    "@hono/node-server": "^2.0.0",
+    "@semaphore-protocol/group": "^4.14.2",
+    "@semaphore-protocol/identity": "^4.14.2",
+    "@semaphore-protocol/proof": "^4.14.2",
+    "dotenv": "^17.4.2",
+    "ethers": "6.13.1",
+    "hono": "^4.12.15"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "concurrently": "^9.2.1",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.4.5"
+  }
+}

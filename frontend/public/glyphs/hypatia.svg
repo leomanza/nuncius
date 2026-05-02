@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Open codex with quill — Hypatia teaches all who come -->
+  <!-- left page -->
+  <path d="M8 18 q12 -4 24 4 v32 q-12 -8 -24 -4 z" fill="currentColor" fill-opacity="0.15" />
+  <!-- right page -->
+  <path d="M56 18 q-12 -4 -24 4 v32 q12 -8 24 -4 z" fill="currentColor" fill-opacity="0.15" />
+  <!-- spine -->
+  <path d="M32 22 L32 54" stroke-opacity="0.7" />
+  <!-- text lines on left page -->
+  <path d="M14 26 q8 -2 16 2" stroke-opacity="0.55" />
+  <path d="M14 32 q8 -2 16 2" stroke-opacity="0.55" />
+  <path d="M14 38 q8 -2 16 2" stroke-opacity="0.55" />
+  <!-- text lines on right page -->
+  <path d="M50 26 q-8 -2 -16 2" stroke-opacity="0.55" />
+  <path d="M50 32 q-8 -2 -16 2" stroke-opacity="0.55" />
+  <path d="M50 38 q-8 -2 -16 2" stroke-opacity="0.55" />
+  <!-- quill (top right) -->
+  <path d="M52 8 L40 22" />
+  <path d="M52 8 q-2 4 -3 8" stroke-opacity="0.7" />
+  <path d="M51 9 q-3 3 -5 7" stroke-opacity="0.5" />
+</svg>

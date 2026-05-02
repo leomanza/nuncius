@@ -1,0 +1,13 @@
+.env
+.env.secrets
+.env.local
+node_modules
+artifacts
+cache
+typechain-types
+logs
+keys/*.pem
+*.tsbuildinfo
+sessions/axl-src/
+.playwright-mcp
+session*/

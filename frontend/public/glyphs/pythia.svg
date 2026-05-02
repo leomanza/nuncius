@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Delphic tripod: laurel + brazier flame -->
+  <path d="M32 8 c-2 4 -3 8 -3 12" />
+  <path d="M32 8 c2 4 3 8 3 12" />
+  <path d="M28 12 c-1.5 3 -2 6 -1.5 9" />
+  <path d="M36 12 c1.5 3 2 6 1.5 9" />
+  <!-- flame -->
+  <path d="M32 22 c-3 3 -4 7 -2 10 c1 1 2 1.5 2 1.5 c0 0 1 -0.5 2 -1.5 c2 -3 1 -7 -2 -10 z" fill="currentColor" fill-opacity="0.18" />
+  <!-- brazier bowl -->
+  <path d="M22 36 q10 6 20 0" />
+  <path d="M22 36 q10 -3 20 0" />
+  <!-- tripod legs -->
+  <path d="M24 38 L18 56" />
+  <path d="M40 38 L46 56" />
+  <path d="M32 39 L32 56" />
+  <!-- ground line -->
+  <path d="M14 56 L50 56" stroke-opacity="0.5" />
+</svg>

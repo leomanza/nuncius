@@ -1,0 +1,48 @@
+{
+  "daoAddress": "0x650c074910bC5855f6573f9d62EE5b8bA90664D9",
+  "proposalId": "4",
+  "openedTxHash": "0x4ba70d1ddd732fc41b35acc80b54df124e833fe775a1ecece00124ffafe81d5f",
+  "finalState": {
+    "approveCount": "5",
+    "rejectCount": "0",
+    "resolved": true,
+    "approved": true
+  },
+  "attacks": {
+    "b5": {
+      "label": "B5 wrong-scope",
+      "reverted": true,
+      "reason": "execution reverted"
+    },
+    "b4": {
+      "label": "B4 invalid-signal",
+      "reverted": true,
+      "reason": "execution reverted"
+    },
+    "nullifierReuse": {
+      "label": "Nullifier reuse",
+      "reverted": true,
+      "reason": "execution reverted"
+    }
+  },
+  "cleanupTxs": [
+    {
+      "i": 1,
+      "hash": "0x5f7b412e9189c15e1e613d625e3411bfb9ae3e38037fde70c974edd04ea198fc"
+    },
+    {
+      "i": 2,
+      "hash": "0xc6ceddafd1b46228be9a5145efe63296edadff8e08695365fa4257370c55d38c"
+    },
+    {
+      "i": 4,
+      "hash": "0x8daeadc2b0acf09bdac8be7d59e3b3bf9088e3c210e4ba3e9f92b5d9de04c1e1"
+    },
+    {
+      "i": 5,
+      "hash": "0x613c0cdf131a4c67e7453e05780785b98f3a154c8f87e13a6d61b519848b0c68"
+    }
+  ],
+  "nullifierReuseFirstSubmit": "0xf99b544548205b5315f17fdf5d7b626b4e710747562cb5ced7743955e494b80c",
+  "timestamp": "2026-04-30T12:00:12.550Z"
+}

@@ -1,0 +1,192 @@
+{
+  "daoAddress": "0x650c074910bC5855f6573f9d62EE5b8bA90664D9",
+  "memberCount": "5",
+  "proposalCount": "3",
+  "currentProposalId": "0",
+  "proposals": [
+    {
+      "id": "1",
+      "description": "[E2E smoke] Fund 50k USDC audit for Protocol X",
+      "approveCount": "3",
+      "rejectCount": "2",
+      "resolved": true,
+      "approved": true,
+      "createdAt": "1777516945",
+      "resolvedAt": "1777516987"
+    },
+    {
+      "id": "2",
+      "description": "[smoke] open-proposal.ts standalone test",
+      "approveCount": "3",
+      "rejectCount": "2",
+      "resolved": true,
+      "approved": true,
+      "createdAt": "1777517066",
+      "resolvedAt": "1777517358"
+    },
+    {
+      "id": "3",
+      "description": "Should the DAO fund a 50,000 USDC security audit for Protocol X by Trail of Bits, payable on completion of report deliverables?",
+      "approveCount": "5",
+      "rejectCount": "0",
+      "resolved": true,
+      "approved": true,
+      "createdAt": "1777543551",
+      "resolvedAt": "1777549770"
+    }
+  ],
+  "proposalOpenedEvents": [
+    {
+      "tx": "0x53171a6ddb0f6e0990b00a0f2ff4c04706f3a549efd06e844436889c6af205b0",
+      "block": 30624039,
+      "proposalId": "1",
+      "description": "[E2E smoke] Fund 50k USDC audit for Protocol X"
+    },
+    {
+      "tx": "0xa338a4a8c7593bde6325e601eb73e0c64882b3c022ff01fe94500e02439e75f2",
+      "block": 30624300,
+      "proposalId": "2",
+      "description": "[smoke] open-proposal.ts standalone test"
+    },
+    {
+      "tx": "0x463fb81bb00980e66559cbd6272bb8f2c4119a5bd7167a8ce276c69d8d13eb35",
+      "block": 30682540,
+      "proposalId": "3",
+      "description": "Should the DAO fund a 50,000 USDC security audit for Protocol X by Trail of Bits, payable on completion of report deliverables?"
+    }
+  ],
+  "proofVerifiedEvents": [
+    {
+      "tx": "0x10307fef2eff2e23ffc64b391183f6cf060ac215d348d37add9491b20311063a",
+      "block": 30624060,
+      "proposalId": "1",
+      "signal": "1",
+      "nullifier": "0x726136a7447bdd690fdfd84ddd40c8d3ab64a249ddd6840789900421c4e1374"
+    },
+    {
+      "tx": "0xe5cdefcd211e614fdff44f4b5bd34e8dc64a63ea6d89020ed896510d2b5c616a",
+      "block": 30624077,
+      "proposalId": "1",
+      "signal": "1",
+      "nullifier": "0x1f25f6948eebd609a76254a40f410e230daaed019e28eb65b4ff56b246086fc5"
+    },
+    {
+      "tx": "0xa777e622c7cc6aee46cc09ed234efba79f6b146d589b32a05cdce66d8dc602fe",
+      "block": 30624095,
+      "proposalId": "1",
+      "signal": "2",
+      "nullifier": "0x118caed9584411c009ae53c2b8b24bbdc3e8c951755e080470df87415df768b5"
+    },
+    {
+      "tx": "0x8d943c0ff8fe2c78ebb54e0b482119bbaeb6e570da4ac80e8a7bf2ef7f157699",
+      "block": 30624112,
+      "proposalId": "1",
+      "signal": "1",
+      "nullifier": "0xe210da2b923a43fafdc9cfad883dc6937aa29443d4beaec8c6cedce3eeed0c4"
+    },
+    {
+      "tx": "0x1f58c359aed3356f84287eaec337824ea659dcfe7d613ecb84b1869998564da9",
+      "block": 30624130,
+      "proposalId": "1",
+      "signal": "2",
+      "nullifier": "0x9b21028c5d7f99c50099857eb2ca2ab012d553ab97ae657b5526870f282bbed"
+    },
+    {
+      "tx": "0xf8b951e39f8bc03fa74d510c6635e3efaaa49a4e934692cdc7a26c1ae73b2738",
+      "block": 30624864,
+      "proposalId": "2",
+      "signal": "1",
+      "nullifier": "0x160e896131fe0517b18a74891f01550d03ef5669f3e1e2e24f2c133d8c3ba9c1"
+    },
+    {
+      "tx": "0x71936a7681e4388cefeb60594712e635162c73254c2cf70ca35859eeb00b7192",
+      "block": 30624879,
+      "proposalId": "2",
+      "signal": "1",
+      "nullifier": "0x16876b6818958e303a14233f33abbee8ee2da62d49d71960fee9c06b4b1a7ea8"
+    },
+    {
+      "tx": "0xf3a140819eb4e04d0a58e9fc8cd87651a79e2deec3a89d18286a4bbd3f91f7ba",
+      "block": 30624898,
+      "proposalId": "2",
+      "signal": "2",
+      "nullifier": "0x10283a8d363585789385b37273afacfb34ef04f5a11a3e6523398bc8f28d159c"
+    },
+    {
+      "tx": "0x3e2ab4970c123e221434f63537167fd8e898c78a7ee52bc8db115f8c5a1f8b66",
+      "block": 30624914,
+      "proposalId": "2",
+      "signal": "1",
+      "nullifier": "0x244d534cb2e7130a24054ebbdcb44e119a99a38a2d553432f8c773dcbb8b504c"
+    },
+    {
+      "tx": "0xd8b5826340433d6f6dc726bd312b146908e313eb5f2daa572e07b08a00f0851d",
+      "block": 30624931,
+      "proposalId": "2",
+      "signal": "2",
+      "nullifier": "0x233d423773317542e1a2918e2e8d329ec9e773db7de610152c20c6e1dcdcebdf"
+    },
+    {
+      "tx": "0xd0c820d6951f81b8b8744cdad276df81d3f762ee3056f4f90530b5d0aa93a954",
+      "block": 30696794,
+      "proposalId": "3",
+      "signal": "1",
+      "nullifier": "0x2d7a8fde11a57429ed7c551149c035d5be065b1b56aaa6fc84e4f284c2a51844"
+    },
+    {
+      "tx": "0xa295764621354d541337bb24f9e5b3913ad5ecaae027f2a30d972fc1a6b2861f",
+      "block": 30696817,
+      "proposalId": "3",
+      "signal": "1",
+      "nullifier": "0x2ee430f4aeca44d8f99cfe630622a99c2b7c13612817cc48c7f7ed71615bf940"
+    },
+    {
+      "tx": "0x102434799f2cd561d4c38efd5317557124fc7dc6365fce5cede6532df0221d52",
+      "block": 30696831,
+      "proposalId": "3",
+      "signal": "1",
+      "nullifier": "0x135a7429e0a1a860917c09be066dcd7c31cfb413ec04517fc2a608dff207204c"
+    },
+    {
+      "tx": "0x35e6d307c47403222a090c77c99a50f09cc3ebed0c49ad697c93b317db9372b6",
+      "block": 30696851,
+      "proposalId": "3",
+      "signal": "1",
+      "nullifier": "0x248ebeb3b5e418841e6beb15b69fd3dcb46f326f2068c3eb1f16fb3f7d68fdab"
+    },
+    {
+      "tx": "0x7ad77fd7953c547a3c66d24299e3974d12cab5f987570fa0a1e20084577394d2",
+      "block": 30696876,
+      "proposalId": "3",
+      "signal": "1",
+      "nullifier": "0x2d345a6a0a443d634b4c5a9c2729555fa7d6370feb56262674aad90b0ffcc212"
+    }
+  ],
+  "proposalResolvedEvents": [
+    {
+      "tx": "0x1f58c359aed3356f84287eaec337824ea659dcfe7d613ecb84b1869998564da9",
+      "block": 30624130,
+      "proposalId": "1",
+      "approved": true,
+      "approveCount": "3",
+      "rejectCount": "2"
+    },
+    {
+      "tx": "0xd8b5826340433d6f6dc726bd312b146908e313eb5f2daa572e07b08a00f0851d",
+      "block": 30624931,
+      "proposalId": "2",
+      "approved": true,
+      "approveCount": "3",
+      "rejectCount": "2"
+    },
+    {
+      "tx": "0x7ad77fd7953c547a3c66d24299e3974d12cab5f987570fa0a1e20084577394d2",
+      "block": 30696876,
+      "proposalId": "3",
+      "approved": true,
+      "approveCount": "5",
+      "rejectCount": "0"
+    }
+  ],
+  "timestamp": "2026-04-30T11:55:31.384Z"
+}

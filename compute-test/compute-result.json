@@ -1,0 +1,12 @@
+{
+  "network": "0G Galileo",
+  "chainId": 16602,
+  "wallet": "0x810A3048375EFe1e13F373b5118945Fe3Eac7f22",
+  "provider": "0xa48f01287233509FD694a22Bf840225062E67836",
+  "model": "qwen/qwen-2.5-7b-instruct",
+  "endpoint": "https://compute-network-6.integratenetwork.work",
+  "request": "Reply with exactly one word: hello",
+  "response": "Hello",
+  "elapsedMs": 1409,
+  "timestamp": "2026-04-30T01:16:26.130Z"
+}

@@ -1,0 +1,171 @@
+@import "tailwindcss";
+
+/* Sidereus Nuncius palette */
+:root {
+  --paper:        #efe4cc;
+  --paper-dim:    #d8c9ad;
+  --paper-shade:  #c4b48f;
+  --ink:          #1a1612;
+  --ink-warm:     #4a2c1c;
+  --ink-soft:     #6b4a35;
+  --star:         #fff8e7;
+  --star-dim:     #d4a13c;
+  --verdigris:    #4a6759;
+  --lapis:        #0c1e3e;
+  --lapis-deep:   #06122a;
+  --lapis-dark:   #040b1c;
+  --vermilion:    #a3361b;
+  --celadon:      #7d9b76;
+}
+
+@theme inline {
+  --color-paper:        var(--paper);
+  --color-paper-dim:    var(--paper-dim);
+  --color-paper-shade:  var(--paper-shade);
+  --color-ink:          var(--ink);
+  --color-ink-warm:     var(--ink-warm);
+  --color-ink-soft:     var(--ink-soft);
+  --color-star:         var(--star);
+  --color-star-dim:     var(--star-dim);
+  --color-verdigris:    var(--verdigris);
+  --color-lapis:        var(--lapis);
+  --color-lapis-deep:   var(--lapis-deep);
+  --color-lapis-dark:   var(--lapis-dark);
+  --color-vermilion:    var(--vermilion);
+  --color-celadon:      var(--celadon);
+  --font-serif:         var(--font-garamond), Garamond, "EB Garamond", "Times New Roman", serif;
+  --font-mono:          var(--font-jetbrains), "JetBrains Mono", "SF Mono", monospace;
+}
+
+html, body {
+  background: var(--lapis-deep);
+  color: var(--star);
+  font-family: var(--font-serif);
+}
+
+.starfield {
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(255, 248, 231, 0.5) 50%, transparent 51%),
+    radial-gradient(1px 1px at 70% 65%, rgba(255, 248, 231, 0.45) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 40% 80%, rgba(212, 161, 60, 0.4) 50%, transparent 51%),
+    radial-gradient(1px 1px at 85% 20%, rgba(255, 248, 231, 0.35) 50%, transparent 51%),
+    radial-gradient(1px 1px at 55% 50%, rgba(255, 248, 231, 0.4) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 12% 85%, rgba(212, 161, 60, 0.35) 50%, transparent 51%),
+    radial-gradient(1px 1px at 95% 75%, rgba(255, 248, 231, 0.3) 50%, transparent 51%),
+    radial-gradient(1px 1px at 30% 10%, rgba(255, 248, 231, 0.4) 50%, transparent 51%);
+  background-size: 800px 600px;
+  background-repeat: repeat;
+}
+
+.vellum {
+  background:
+    radial-gradient(ellipse at top left, rgba(255, 248, 231, 0.12) 0%, transparent 60%),
+    linear-gradient(180deg, var(--paper) 0%, var(--paper-dim) 100%);
+  color: var(--ink);
+  border: 1px solid rgba(74, 44, 28, 0.25);
+  box-shadow:
+    inset 0 0 60px rgba(74, 44, 28, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.45);
+  position: relative;
+}
+
+.vellum::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 12% 25%, rgba(74, 44, 28, 0.04) 0%, transparent 30%),
+    radial-gradient(circle at 80% 70%, rgba(74, 44, 28, 0.05) 0%, transparent 35%);
+  pointer-events: none;
+}
+
+.plate {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+}
+
+.plate-dark { color: var(--star-dim); }
+
+.drop-cap::first-letter {
+  font-family: var(--font-serif);
+  float: left;
+  font-size: 3.6rem;
+  line-height: 0.85;
+  font-weight: 600;
+  margin-right: 0.5rem;
+  margin-top: 0.25rem;
+  color: var(--ink);
+}
+
+.rule-orn { display: flex; align-items: center; gap: 0.75rem; color: var(--ink-soft); }
+.rule-orn::before, .rule-orn::after {
+  content: ""; flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ink-soft), transparent);
+  opacity: 0.4;
+}
+
+.rule-orn-dark { color: var(--star-dim); }
+.rule-orn-dark::before, .rule-orn-dark::after { background: linear-gradient(90deg, transparent, var(--star-dim), transparent); opacity: 0.35; }
+
+@keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+.animate-twinkle { animation: twinkle 2.4s ease-in-out infinite; }
+
+@keyframes twinkle-slow { 0%, 100% { opacity: 0.85; } 50% { opacity: 0.4; } }
+.animate-twinkle-slow { animation: twinkle-slow 4s ease-in-out infinite; }
+
+@keyframes quill-stroke {
+  from { stroke-dashoffset: 100; opacity: 0.2; }
+  to   { stroke-dashoffset: 0;   opacity: 1;   }
+}
+.animate-quill { stroke-dasharray: 100; animation: quill-stroke 0.9s ease-out forwards; }
+
+@keyframes constellation-pulse { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.6; } }
+.animate-constellation { animation: constellation-pulse 3s ease-in-out infinite; }
+
+.ink-bloom { position: relative; overflow: hidden; transition: transform 0.3s ease; }
+.ink-bloom::before {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, rgba(74, 44, 28, 0.15) 0%, transparent 70%);
+  opacity: 0; transition: opacity 0.4s ease; pointer-events: none;
+}
+.ink-bloom:hover::before { opacity: 1; }
+
+@keyframes capital-rise {
+  0%   { opacity: 0; transform: scale(0.6) translateY(40px); filter: blur(8px); }
+  60%  { opacity: 1; transform: scale(1.05) translateY(-4px); filter: blur(0); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.animate-capital { animation: capital-rise 1.4s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+
+@keyframes ink-wash {
+  from { transform: scale(0.4); opacity: 0; }
+  to   { transform: scale(1.2); opacity: 0.55; }
+}
+.animate-ink-wash { animation: ink-wash 1.8s ease-out both; }
+
+@keyframes fade-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-rise { animation: fade-rise 0.6s ease-out both; }
+
+.delay-1 { animation-delay: 100ms; }
+.delay-2 { animation-delay: 200ms; }
+.delay-3 { animation-delay: 300ms; }
+.delay-4 { animation-delay: 400ms; }
+.delay-5 { animation-delay: 500ms; }
+
+.marginalia {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+.marginalia-dark { color: var(--star-dim); }
+
+.mono { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.02em; }

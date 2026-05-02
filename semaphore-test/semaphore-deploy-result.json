@@ -1,0 +1,13 @@
+{
+  "network": "galileo",
+  "chainId": 16602,
+  "deployer": "0x810A3048375EFe1e13F373b5118945Fe3Eac7f22",
+  "poseidonT3": "0xBa04c3B5A5Ba984A0E3DFA359b5F90566c313A1e",
+  "semaphoreVerifier": "0xCa5dbA14bBB19a72F4A36c088c1d437d8C0Cb3E1",
+  "semaphore": "0x3a546a753621100c7A569555FA2F081A3D761410",
+  "fixtureGroupId": "0",
+  "verifyProofResult": true,
+  "validateProofTx": "0x07f478f6ff3a579e03762afa05cd24a6ed9a5bf4f06487979880fbbabf71e468",
+  "validateProofBlock": 30607505,
+  "timestamp": "2026-04-30T00:38:38.973Z"
+}

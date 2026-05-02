@@ -1,0 +1,10 @@
+{
+  "network": "galileo",
+  "chainId": 16602,
+  "deployer": "0x810A3048375EFe1e13F373b5118945Fe3Eac7f22",
+  "semaphore": "0x3a546a753621100c7A569555FA2F081A3D761410",
+  "disputeDAO": "0x650c074910bC5855f6573f9d62EE5b8bA90664D9",
+  "groupId": "1",
+  "deployTx": "0x793c3c44e78903a7646385d5069949b97ed800ffab58eae0314cfa53fb8c34e1",
+  "timestamp": "2026-04-30T02:41:21.505Z"
+}
