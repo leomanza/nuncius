@@ -12,7 +12,7 @@
 ///     today the only chat model online is qwen/qwen-2.5-7b-instruct.
 ///   - Ollama fallback (llama3.2:3b) for offline / provider-down cases.
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.callComputeInference = void 0;
+exports.callComputeInference = exports.warmupBroker = void 0;
 const _0g_serving_broker_1 = require("@0glabs/0g-serving-broker");
 const ethers_1 = require("ethers");
 const RPC_URL = process.env.RPC_URL || "https://evmrpc-testnet.0g.ai";
@@ -65,28 +65,70 @@ async function getBroker() {
         cacheInflight = null;
     }
 }
+/// Pre-warm the broker so the first inference call doesn't pay cold-start +
+/// race against simultaneous broker init from other agents. Safe to call
+/// multiple times — getBroker is idempotent.
+async function warmupBroker() {
+    try {
+        await withTimeout(getBroker(), 30000, "broker warmup");
+    }
+    catch (err) {
+        console.warn("[compute] broker warmup failed (will retry on first inference):", String(err));
+    }
+}
+exports.warmupBroker = warmupBroker;
+const RETRY_BACKOFFS_MS = [500, 1500, 4000]; // ~6s total — covers cold-start 429 burst
+async function postChatCompletions(broker, provider, endpoint, model, system, user, opts) {
+    const prompt = `${system}\n\n${user}`;
+    const headers = await broker.inference.getRequestHeaders(provider.provider, prompt);
+    const url = endpoint.endsWith("/chat/completions") ? endpoint : `${endpoint.replace(/\/+$/, "")}/chat/completions`;
+    return await withTimeout(fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...headers },
+        body: JSON.stringify({
+            model,
+            messages: [
+                { role: "system", content: system },
+                { role: "user", content: user },
+            ],
+            max_tokens: opts.maxTokens ?? 400,
+            temperature: opts.temperature ?? 0,
+        }),
+    }), COMPUTE_TIMEOUT_MS, "0g compute fetch");
+}
 async function callComputeInference(system, user, opts = {}) {
     const t0 = Date.now();
     try {
         const { broker, provider, endpoint, model } = (await withTimeout(getBroker(), 15000, "broker init"));
-        const prompt = `${system}\n\n${user}`;
-        const headers = await broker.inference.getRequestHeaders(provider.provider, prompt);
-        const url = endpoint.endsWith("/chat/completions") ? endpoint : `${endpoint.replace(/\/+$/, "")}/chat/completions`;
-        const res = await withTimeout(fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json", ...headers },
-            body: JSON.stringify({
-                model,
-                messages: [
-                    { role: "system", content: system },
-                    { role: "user", content: user },
-                ],
-                max_tokens: opts.maxTokens ?? 400,
-                temperature: opts.temperature ?? 0,
-            }),
-        }), COMPUTE_TIMEOUT_MS, "0g compute fetch");
-        if (!res.ok)
-            throw new Error(`0G compute HTTP ${res.status}`);
+        let res = null;
+        let lastErr = null;
+        for (let attempt = 0; attempt <= RETRY_BACKOFFS_MS.length; attempt++) {
+            try {
+                const r = await postChatCompletions(broker, provider, endpoint, model, system, user, opts);
+                if (r.ok) {
+                    res = r;
+                    break;
+                }
+                // 429 (rate limited) and 503 (transient) are retryable.
+                if ((r.status === 429 || r.status === 503) && attempt < RETRY_BACKOFFS_MS.length) {
+                    const delay = RETRY_BACKOFFS_MS[attempt];
+                    console.warn(`[compute] 0G HTTP ${r.status}, retry ${attempt + 1}/${RETRY_BACKOFFS_MS.length} after ${delay}ms`);
+                    await new Promise((r) => setTimeout(r, delay));
+                    continue;
+                }
+                throw new Error(`0G compute HTTP ${r.status}`);
+            }
+            catch (err) {
+                lastErr = err;
+                if (attempt >= RETRY_BACKOFFS_MS.length)
+                    throw err;
+                // Network-level failure — also retry with backoff.
+                const delay = RETRY_BACKOFFS_MS[attempt];
+                await new Promise((r) => setTimeout(r, delay));
+            }
+        }
+        if (!res)
+            throw lastErr || new Error("0G compute exhausted retries");
         const chatID = res.headers.get("ZG-Res-Key") || res.headers.get("zg-res-key") || undefined;
         const data = await res.json();
         const text = data.choices?.[0]?.message?.content || "";
@@ -97,7 +139,7 @@ async function callComputeInference(system, user, opts = {}) {
         return { text, source: "0g-compute", provider: provider.provider, model, elapsedMs: Date.now() - t0 };
     }
     catch (err) {
-        console.warn("[compute] 0G failed, falling back to Ollama:", String(err));
+        console.warn("[compute] 0G exhausted retries, falling back to Ollama:", String(err));
         const text = await callOllama(system, user, opts);
         return { text, source: "ollama", model: OLLAMA_MODEL, elapsedMs: Date.now() - t0 };
     }

@@ -18,7 +18,7 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Nuncius — Anonymous DAO Governance",
   description:
-    "A protocol where autonomous oracles deliberate in private and emit a single verifiable verdict on-chain.",
+    "A coordination protocol where AI agents deliberate in private and emit a single verifiable verdict on-chain.",
 };
 
 export default function RootLayout({

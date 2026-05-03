@@ -23,14 +23,13 @@ export function Constellatio({ statuses }: ConstellatioProps) {
   const cx = W / 2;
   const cy = H / 2 + 8;
   const r = 92;
-  const points = PERSONAS.map((p, i) => {
-    const angle = (i * 2 * Math.PI) / 5 - Math.PI / 2;
-    return {
-      persona: p,
-      x: cx + r * Math.cos(angle),
-      y: cy + r * Math.sin(angle),
-    };
-  });
+  const points = [
+    { persona: PERSONAS[0], x: 168, y: 34 },   // Pythia
+    { persona: PERSONAS[1], x: 52,  y: 112 },  // Ada
+    { persona: PERSONAS[2], x: 258, y: 122 },  // Ziggy
+    { persona: PERSONAS[3], x: 104, y: 222 },  // Hypatia
+    { persona: PERSONAS[4], x: 238, y: 244 },  // Capitán Beto
+  ];
 
   // Line activity = at least one endpoint is active (deliberating/voting).
   const stateOf = (idx: number) =>

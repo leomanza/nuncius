@@ -44,6 +44,7 @@ dotenv.config({ path: path.join(REPO_ROOT, ".env.secrets") });
 const axl_client_1 = require("../../shared/axl-client");
 const axl_handler_1 = require("./axl-handler");
 const personas_1 = require("../../shared/personas");
+const _0g_compute_client_1 = require("../../shared/0g-compute-client");
 const AGENT_INDEX = parseInt(process.env.AGENT_INDEX || "1", 10);
 const PERSONA = (0, personas_1.getPersonaByIndex)(AGENT_INDEX);
 const TAG = PERSONA.displayName;
@@ -98,6 +99,9 @@ async function main() {
     console.log(`[${TAG}] booting — AXL=${AXL_API_URL} http=${HTTP_PORT} dao=${DAO_ADDRESS} skipVote=${SKIP_VOTE}`);
     const axl = await (0, axl_client_1.createAXLClient)(AXL_API_URL);
     console.log(`[${TAG}] AXL peer id: ${axl.ourPeerId.slice(0, 16)}…`);
+    // Pre-warm the 0G compute broker out of the deliberation critical path so
+    // simultaneous broker init across 5 agents doesn't pile up at first proposal.
+    void (0, _0g_compute_client_1.warmupBroker)().then(() => console.log(`[${TAG}] 0G broker ready`));
     (0, axl_client_1.startReceiveLoop)(axl, async (msg) => {
         const env = msg.payload;
         if (!env || typeof env !== "object" || env.type !== "PROPOSAL_BROADCAST") {

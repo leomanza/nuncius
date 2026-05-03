@@ -69,6 +69,46 @@ async function getBroker() {
   }
 }
 
+/// Pre-warm the broker so the first inference call doesn't pay cold-start +
+/// race against simultaneous broker init from other agents. Safe to call
+/// multiple times — getBroker is idempotent.
+export async function warmupBroker(): Promise<void> {
+  try {
+    await withTimeout(getBroker(), 30000, "broker warmup");
+  } catch (err) {
+    console.warn("[compute] broker warmup failed (will retry on first inference):", String(err));
+  }
+}
+
+const RETRY_BACKOFFS_MS = [500, 1500, 4000]; // ~6s total — covers cold-start 429 burst
+
+async function postChatCompletions(
+  broker: any,
+  provider: any,
+  endpoint: string,
+  model: string,
+  system: string,
+  user: string,
+  opts: { maxTokens?: number; temperature?: number },
+): Promise<Response> {
+  const prompt = `${system}\n\n${user}`;
+  const headers = await broker.inference.getRequestHeaders(provider.provider, prompt);
+  const url = endpoint.endsWith("/chat/completions") ? endpoint : `${endpoint.replace(/\/+$/, "")}/chat/completions`;
+  return await withTimeout(fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...headers },
+    body: JSON.stringify({
+      model,
+      messages: [
+        { role: "system", content: system },
+        { role: "user", content: user },
+      ],
+      max_tokens: opts.maxTokens ?? 400,
+      temperature: opts.temperature ?? 0,
+    }),
+  }), COMPUTE_TIMEOUT_MS, "0g compute fetch");
+}
+
 export async function callComputeInference(
   system: string,
   user: string,
@@ -77,24 +117,30 @@ export async function callComputeInference(
   const t0 = Date.now();
   try {
     const { broker, provider, endpoint, model } = (await withTimeout(getBroker(), 15000, "broker init"))!;
-    const prompt = `${system}\n\n${user}`;
-    const headers = await broker.inference.getRequestHeaders(provider.provider, prompt);
-    const url = endpoint.endsWith("/chat/completions") ? endpoint : `${endpoint.replace(/\/+$/, "")}/chat/completions`;
-    const res = await withTimeout(fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...headers },
-      body: JSON.stringify({
-        model,
-        messages: [
-          { role: "system", content: system },
-          { role: "user", content: user },
-        ],
-        max_tokens: opts.maxTokens ?? 400,
-        temperature: opts.temperature ?? 0,
-      }),
-    }), COMPUTE_TIMEOUT_MS, "0g compute fetch");
+    let res: Response | null = null;
+    let lastErr: Error | null = null;
+    for (let attempt = 0; attempt <= RETRY_BACKOFFS_MS.length; attempt++) {
+      try {
+        const r = await postChatCompletions(broker, provider, endpoint, model, system, user, opts);
+        if (r.ok) { res = r; break; }
+        // 429 (rate limited) and 503 (transient) are retryable.
+        if ((r.status === 429 || r.status === 503) && attempt < RETRY_BACKOFFS_MS.length) {
+          const delay = RETRY_BACKOFFS_MS[attempt];
+          console.warn(`[compute] 0G HTTP ${r.status}, retry ${attempt + 1}/${RETRY_BACKOFFS_MS.length} after ${delay}ms`);
+          await new Promise((r) => setTimeout(r, delay));
+          continue;
+        }
+        throw new Error(`0G compute HTTP ${r.status}`);
+      } catch (err: any) {
+        lastErr = err;
+        if (attempt >= RETRY_BACKOFFS_MS.length) throw err;
+        // Network-level failure — also retry with backoff.
+        const delay = RETRY_BACKOFFS_MS[attempt];
+        await new Promise((r) => setTimeout(r, delay));
+      }
+    }
+    if (!res) throw lastErr || new Error("0G compute exhausted retries");
 
-    if (!res.ok) throw new Error(`0G compute HTTP ${res.status}`);
     const chatID = res.headers.get("ZG-Res-Key") || res.headers.get("zg-res-key") || undefined;
     const data: any = await res.json();
     const text = data.choices?.[0]?.message?.content || "";
@@ -104,7 +150,7 @@ export async function callComputeInference(
     broker.inference.processResponse(provider.provider, finalChatID, usage).catch(() => {});
     return { text, source: "0g-compute", provider: provider.provider, model, elapsedMs: Date.now() - t0 };
   } catch (err) {
-    console.warn("[compute] 0G failed, falling back to Ollama:", String(err));
+    console.warn("[compute] 0G exhausted retries, falling back to Ollama:", String(err));
     const text = await callOllama(system, user, opts);
     return { text, source: "ollama", model: OLLAMA_MODEL, elapsedMs: Date.now() - t0 };
   }

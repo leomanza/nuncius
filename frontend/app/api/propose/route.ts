@@ -5,9 +5,12 @@
 /// PROPOSAL_BROADCAST envelope to all 5 agents via the local AXL node 1
 /// HTTP API.
 ///
-/// This mirrors what `agents/scripts/trigger-proposal.ts` does — but in-process
-/// so the dashboard "Pose a question" button can drive the demo without a
-/// terminal.
+/// Deployment modes:
+///   - Local dev:     reads peer ids from logs/axl-peer-ids.json (start-axl.sh writes it)
+///   - Tunnel mode:   COORDINATOR_AXL set to a public tunnel URL → discovers peers via /topology
+///   - Vercel offline: agents unreachable → openProposal still lands; fanout returns skipped:true
+///
+/// Best-effort fanout: failures here never roll back the chain tx.
 
 import { NextResponse } from "next/server";
 import { ethers } from "ethers";
@@ -20,6 +23,38 @@ const COORDINATOR_AXL = process.env.COORDINATOR_AXL || "http://127.0.0.1:10001";
 const PEER_IDS_PATH =
   process.env.AXL_PEER_IDS_PATH ||
   path.resolve(process.cwd(), "..", "logs", "axl-peer-ids.json");
+const RATE_LIMIT_WINDOW_MS = parseInt(process.env.PROPOSE_RATE_LIMIT_WINDOW_MS || "300000"); // 5 min
+const RATE_LIMIT_MAX = parseInt(process.env.PROPOSE_RATE_LIMIT_MAX || "1");
+
+// In-memory rate limiter — survives within a single serverless function instance.
+// Casual spam deterrent, not a security boundary.
+const rateLimitState = new Map<string, number[]>();
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const cutoff = now - RATE_LIMIT_WINDOW_MS;
+  const hits = (rateLimitState.get(ip) || []).filter((t) => t > cutoff);
+  if (hits.length >= RATE_LIMIT_MAX) {
+    rateLimitState.set(ip, hits);
+    return true;
+  }
+  hits.push(now);
+  rateLimitState.set(ip, hits);
+  return false;
+}
+
+async function discoverPeerIds(coordinatorAxl: string, peerIdsPath: string): Promise<string[]> {
+  // Prefer the local file if present (local dev path); fall back to /topology
+  // (tunnel / Vercel-with-COORDINATOR_AXL path).
+  if (fs.existsSync(peerIdsPath)) {
+    try {
+      const peers = JSON.parse(fs.readFileSync(peerIdsPath, "utf-8")) as Record<string, { peer_id: string }>;
+      return Object.values(peers).map((p) => p.peer_id);
+    } catch { /* fall through */ }
+  }
+  const top = await fetch(`${coordinatorAxl}/topology`).then((r) => r.json()).catch(() => null);
+  const peers: { public_key: string; up: boolean }[] = top?.peers ?? [];
+  return peers.filter((p) => p.up).map((p) => p.public_key);
+}
 
 const DAO_ABI = [
   "function currentProposalId() view returns (uint256)",
@@ -34,6 +69,15 @@ interface ProposeRequest {
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim()
+      || req.headers.get("x-real-ip")
+      || "anon";
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: "rate-limited", message: `Max ${RATE_LIMIT_MAX} proposal(s) per ${Math.round(RATE_LIMIT_WINDOW_MS / 1000)}s. Try again shortly.` },
+        { status: 429 },
+      );
+    }
     const body = (await req.json()) as ProposeRequest;
     const description = (body.description ?? "").toString().trim();
     if (!description) {
@@ -89,18 +133,13 @@ export async function POST(req: Request) {
     let fanoutOk = 0;
     let fanoutFailed = 0;
     let fanoutSkipped = false;
+    let fanoutReason: string | undefined;
     try {
-      if (!fs.existsSync(PEER_IDS_PATH)) {
+      const peerIds = await discoverPeerIds(COORDINATOR_AXL, PEER_IDS_PATH);
+      if (peerIds.length === 0) {
         fanoutSkipped = true;
+        fanoutReason = "no agents reachable — proposal opened on-chain but no live deliberation in this view";
       } else {
-        const peers = JSON.parse(fs.readFileSync(PEER_IDS_PATH, "utf-8")) as Record<
-          string,
-          { peer_id: string }
-        >;
-        const peerIds = Object.values(peers).map((p) => p.peer_id);
-        // Get our coordinator peer id
-        const top = await fetch(`${COORDINATOR_AXL}/topology`).then((r) => r.json()).catch(() => null);
-        const ourPeerId = top?.our_public_key ?? null;
         const proposal = await dao.getProposal(activeId);
         const groupId: bigint = await dao.groupId();
         const envelope = {
@@ -135,13 +174,11 @@ export async function POST(req: Request) {
             }
           }),
         );
-        if (ourPeerId && !peerIds.includes(ourPeerId)) {
-          // optional: log to server stdout
-        }
       }
     } catch (err) {
       // swallow — chain tx already landed
       fanoutSkipped = true;
+      fanoutReason = (err as any)?.message || "fanout failed";
     }
 
     return NextResponse.json({
@@ -149,7 +186,7 @@ export async function POST(req: Request) {
       description,
       openedTxHash,
       openedBlock,
-      fanout: { ok: fanoutOk, failed: fanoutFailed, skipped: fanoutSkipped },
+      fanout: { ok: fanoutOk, failed: fanoutFailed, skipped: fanoutSkipped, reason: fanoutReason },
     });
   } catch (err: any) {
     return NextResponse.json(

@@ -22,6 +22,7 @@ import { NunciusMessage } from "../../shared/types";
 import { AgentState } from "../../shared/0g-kv-client";
 import { handleProposal } from "./axl-handler";
 import { getPersonaByIndex } from "../../shared/personas";
+import { warmupBroker } from "../../shared/0g-compute-client";
 
 const AGENT_INDEX = parseInt(process.env.AGENT_INDEX || "1", 10);
 const PERSONA = getPersonaByIndex(AGENT_INDEX);
@@ -81,6 +82,10 @@ async function main() {
 
   const axl = await createAXLClient(AXL_API_URL);
   console.log(`[${TAG}] AXL peer id: ${axl.ourPeerId.slice(0, 16)}…`);
+
+  // Pre-warm the 0G compute broker out of the deliberation critical path so
+  // simultaneous broker init across 5 agents doesn't pile up at first proposal.
+  void warmupBroker().then(() => console.log(`[${TAG}] 0G broker ready`));
 
   startReceiveLoop<NunciusMessage>(
     axl,

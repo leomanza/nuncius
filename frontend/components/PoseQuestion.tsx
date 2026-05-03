@@ -73,7 +73,7 @@ export function PoseQuestion({ hasActiveProposal, activeId, onPosed }: PoseQuest
           placeholder={
             hasActiveProposal
               ? "An active proposal must resolve before posing another."
-              : "Write a question for the five oracles…"
+              : "Write a question for the oracles…"
           }
           rows={3}
           maxLength={500}
