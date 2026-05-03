@@ -10,7 +10,8 @@
     "start:4": "sleep 3 && AGENT_INDEX=4 AXL_API_URL=http://127.0.0.1:10004 HTTP_PORT=4004 node dist/voter/src/index.js",
     "start:5": "sleep 4 && AGENT_INDEX=5 AXL_API_URL=http://127.0.0.1:10005 HTTP_PORT=4005 node dist/voter/src/index.js",
     "start:all": "npm run build && concurrently -n Pythia,Ziggy,Beto,Hypatia,Ada -c blue,green,yellow,magenta,cyan \"npm:start:1\" \"npm:start:2\" \"npm:start:3\" \"npm:start:4\" \"npm:start:5\"",
-    "trigger": "ts-node scripts/trigger-proposal.ts"
+    "trigger": "ts-node scripts/trigger-proposal.ts",
+    "force-open": "ts-node scripts/force-resolve-and-open.ts"
   },
   "dependencies": {
     "@0gfoundation/0g-ts-sdk": "^1.2.6",

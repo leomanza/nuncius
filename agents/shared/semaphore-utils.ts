@@ -3,6 +3,18 @@ import { Group } from "@semaphore-protocol/group";
 import { generateProof, verifyProof, type SemaphoreProof } from "@semaphore-protocol/proof";
 import { ethers } from "ethers";
 
+const PROOF_TIMEOUT_MS  = 90_000;
+const MEMBERS_TIMEOUT_MS = 20_000;
+
+function withTimeout<T>(p: Promise<T>, ms: number, tag: string): Promise<T> {
+  return Promise.race([
+    p,
+    new Promise<T>((_, rej) =>
+      setTimeout(() => rej(new Error(`${tag} timed out after ${ms}ms`)), ms),
+    ),
+  ]);
+}
+
 const DAO_ABI = [
   "function submitProof((uint256 merkleTreeDepth,uint256 merkleTreeRoot,uint256 nullifier,uint256 message,uint256 scope,uint256[8] points) proof)",
   "function currentProposalId() view returns (uint256)",
@@ -38,7 +50,11 @@ export async function fetchGroupMembers(
 ): Promise<bigint[]> {
   const dao = new ethers.Contract(daoAddress, DAO_ABI, provider);
   const filter = dao.filters.VoterAdded();
-  const events = await dao.queryFilter(filter, 0, "latest");
+  const events = await withTimeout(
+    dao.queryFilter(filter, 0, "latest"),
+    MEMBERS_TIMEOUT_MS,
+    "fetchGroupMembers",
+  );
   // The VoterAdded event carries (identityCommitment, memberIndex). We sort
   // by memberIndex so the Merkle tree below matches the on-chain insertion order.
   type Row = { commitment: bigint; index: bigint; block: number };
@@ -76,7 +92,11 @@ export async function generateVoteProof(
   const scope = proposalId;
 
   const t0 = Date.now();
-  const proof = await generateProof(identity, group, message, scope);
+  const proof = await withTimeout(
+    generateProof(identity, group, message, scope),
+    PROOF_TIMEOUT_MS,
+    "generateProof",
+  );
   const generationMs = Date.now() - t0;
 
   // Defensive: verify the proof off-chain before paying gas to submit it.
@@ -103,13 +123,46 @@ export async function generateVoteProof(
 /// Submit a generated proof on-chain. The signer is the AGENT wallet — NOT
 /// the deployer — so the on-chain tx-graph cannot link the agent's known
 /// address back to the anonymous vote.
+///
+/// Retries once on transient RPC errors. Known contract reverts that are
+/// non-fatal (nullifier already used = already voted; proposal already
+/// resolved = another agent closed it first) are surfaced as typed results
+/// so callers can log them without treating them as failures.
 export async function submitVoteOnChain(
   proofTuple: BuiltVoteProof["proofTuple"],
   daoAddress: string,
   signer: ethers.Wallet,
-): Promise<{ txHash: string; blockNumber: number; gasUsed: string }> {
+): Promise<{ txHash: string; blockNumber: number; gasUsed: string; alreadyVoted?: boolean; alreadyResolved?: boolean }> {
   const dao = new ethers.Contract(daoAddress, DAO_ABI, signer);
-  const tx = await dao.submitProof(proofTuple);
-  const rc = await tx.wait();
-  return { txHash: tx.hash, blockNumber: rc!.blockNumber, gasUsed: rc!.gasUsed.toString() };
+
+  const attempt = async () => {
+    const tx = await dao.submitProof(proofTuple);
+    const rc = await tx.wait();
+    return { txHash: tx.hash, blockNumber: rc!.blockNumber, gasUsed: rc!.gasUsed.toString() };
+  };
+
+  try {
+    return await attempt();
+  } catch (err: any) {
+    const msg: string = err?.shortMessage || err?.message || String(err);
+
+    // Non-fatal contract reverts — treat as completed, not error.
+    if (/NullifierAlreadyUsed|nullifier.*used/i.test(msg)) {
+      console.warn("[semaphore] nullifier already used — agent already voted this proposal");
+      return { txHash: "", blockNumber: 0, gasUsed: "0", alreadyVoted: true };
+    }
+    if (/AlreadyResolved|already.*resolved/i.test(msg)) {
+      console.warn("[semaphore] proposal already resolved — another agent closed quorum first");
+      return { txHash: "", blockNumber: 0, gasUsed: "0", alreadyResolved: true };
+    }
+
+    // Transient RPC error — retry once after a short pause.
+    if (/network|timeout|ECONNRESET|502|503|ETIMEDOUT/i.test(msg)) {
+      console.warn("[semaphore] transient RPC error, retrying in 3s:", msg);
+      await new Promise((r) => setTimeout(r, 3000));
+      return await attempt();
+    }
+
+    throw err;
+  }
 }

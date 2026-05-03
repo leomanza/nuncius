@@ -33,6 +33,8 @@ async function castAnonymousVote(agentIndex, proposalId, decision, daoAddress) {
         totalElapsedMs: Date.now() - t0,
         decision,
         agentWalletAddress: signer.address,
+        alreadyVoted: onchain.alreadyVoted,
+        alreadyResolved: onchain.alreadyResolved,
     };
 }
 exports.castAnonymousVote = castAnonymousVote;

@@ -5,6 +5,14 @@ const identity_1 = require("@semaphore-protocol/identity");
 const group_1 = require("@semaphore-protocol/group");
 const proof_1 = require("@semaphore-protocol/proof");
 const ethers_1 = require("ethers");
+const PROOF_TIMEOUT_MS = 90000;
+const MEMBERS_TIMEOUT_MS = 20000;
+function withTimeout(p, ms, tag) {
+    return Promise.race([
+        p,
+        new Promise((_, rej) => setTimeout(() => rej(new Error(`${tag} timed out after ${ms}ms`)), ms)),
+    ]);
+}
 const DAO_ABI = [
     "function submitProof((uint256 merkleTreeDepth,uint256 merkleTreeRoot,uint256 nullifier,uint256 message,uint256 scope,uint256[8] points) proof)",
     "function currentProposalId() view returns (uint256)",
@@ -36,7 +44,7 @@ exports.getBabyJubjubHex = getBabyJubjubHex;
 async function fetchGroupMembers(daoAddress, provider) {
     const dao = new ethers_1.ethers.Contract(daoAddress, DAO_ABI, provider);
     const filter = dao.filters.VoterAdded();
-    const events = await dao.queryFilter(filter, 0, "latest");
+    const events = await withTimeout(dao.queryFilter(filter, 0, "latest"), MEMBERS_TIMEOUT_MS, "fetchGroupMembers");
     const rows = events.map((e) => ({
         commitment: BigInt(e.args.identityCommitment),
         index: BigInt(e.args.memberIndex),
@@ -51,7 +59,7 @@ async function generateVoteProof(identity, groupMembers, proposalId, decision) {
     const message = decision === "Approve" ? exports.SIGNAL_APPROVE : exports.SIGNAL_REJECT;
     const scope = proposalId;
     const t0 = Date.now();
-    const proof = await (0, proof_1.generateProof)(identity, group, message, scope);
+    const proof = await withTimeout((0, proof_1.generateProof)(identity, group, message, scope), PROOF_TIMEOUT_MS, "generateProof");
     const generationMs = Date.now() - t0;
     // Defensive: verify the proof off-chain before paying gas to submit it.
     // Avoids the failure mode where the local group differs from the on-chain
@@ -77,10 +85,39 @@ exports.generateVoteProof = generateVoteProof;
 /// Submit a generated proof on-chain. The signer is the AGENT wallet — NOT
 /// the deployer — so the on-chain tx-graph cannot link the agent's known
 /// address back to the anonymous vote.
+///
+/// Retries once on transient RPC errors. Known contract reverts that are
+/// non-fatal (nullifier already used = already voted; proposal already
+/// resolved = another agent closed it first) are surfaced as typed results
+/// so callers can log them without treating them as failures.
 async function submitVoteOnChain(proofTuple, daoAddress, signer) {
     const dao = new ethers_1.ethers.Contract(daoAddress, DAO_ABI, signer);
-    const tx = await dao.submitProof(proofTuple);
-    const rc = await tx.wait();
-    return { txHash: tx.hash, blockNumber: rc.blockNumber, gasUsed: rc.gasUsed.toString() };
+    const attempt = async () => {
+        const tx = await dao.submitProof(proofTuple);
+        const rc = await tx.wait();
+        return { txHash: tx.hash, blockNumber: rc.blockNumber, gasUsed: rc.gasUsed.toString() };
+    };
+    try {
+        return await attempt();
+    }
+    catch (err) {
+        const msg = err?.shortMessage || err?.message || String(err);
+        // Non-fatal contract reverts — treat as completed, not error.
+        if (/NullifierAlreadyUsed|nullifier.*used/i.test(msg)) {
+            console.warn("[semaphore] nullifier already used — agent already voted this proposal");
+            return { txHash: "", blockNumber: 0, gasUsed: "0", alreadyVoted: true };
+        }
+        if (/AlreadyResolved|already.*resolved/i.test(msg)) {
+            console.warn("[semaphore] proposal already resolved — another agent closed quorum first");
+            return { txHash: "", blockNumber: 0, gasUsed: "0", alreadyResolved: true };
+        }
+        // Transient RPC error — retry once after a short pause.
+        if (/network|timeout|ECONNRESET|502|503|ETIMEDOUT/i.test(msg)) {
+            console.warn("[semaphore] transient RPC error, retrying in 3s:", msg);
+            await new Promise((r) => setTimeout(r, 3000));
+            return await attempt();
+        }
+        throw err;
+    }
 }
 exports.submitVoteOnChain = submitVoteOnChain;

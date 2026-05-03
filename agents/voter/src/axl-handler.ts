@@ -91,6 +91,16 @@ export async function handleProposal(
   let cast: CastResult;
   try {
     cast = await castAnonymousVote(agentIndex, proposalId, deliberation.decision, daoAddress);
+    if (cast.alreadyVoted) {
+      console.log(`[${tag}] already voted on #${proposalId} — skipping duplicate`);
+      setStatus({ state: "voted", proposalId, decision: deliberation.decision, updatedAt: Date.now() });
+      return;
+    }
+    if (cast.alreadyResolved) {
+      console.log(`[${tag}] proposal #${proposalId} already resolved — nothing to do`);
+      setStatus({ state: "idle" });
+      return;
+    }
     console.log(
       `[${tag}] PROOF SUBMITTED tx=${cast.txHash} block=${cast.blockNumber} ` +
       `proofGen=${cast.proofGenerationMs}ms total=${cast.totalElapsedMs}ms wallet=${cast.agentWalletAddress.slice(0, 10)}…`,

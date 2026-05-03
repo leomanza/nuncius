@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="la">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nuncius — Brand Assets</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:ital,wght@0,400;0,500;0,600;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:         #07050200;
+      --bg-warm:    #0a0804;
+      --parchment:  #f2ebda;
+      --vellum:     #e6ddc8;
+      --gold:       #c8a84c;
+      --gold-hi:    #f0c860;
+      --gold-lo:    #6e5828;
+      --gold-dim:   rgba(200,168,76,0.4);
+      --star:       #fce898;
+      --vermilion:  #8c1818;
+      --ink:        #bfaa88;
+      --ink-soft:   #7a6848;
+      --line:       rgba(200,168,76,0.28);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      background: var(--bg-warm);
+      color: var(--parchment);
+      font-family: 'EB Garamond', Georgia, serif;
+    }
+
+    body {
+      padding: 5rem 3rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7rem;
+      background:
+        radial-gradient(ellipse 60% 60% at 50% 0%,   rgba(200,168,76,0.04) 0%, transparent 70%),
+        radial-gradient(ellipse 80% 80% at 50% 100%, rgba(0,0,0,0.4) 0%, transparent 60%),
+        #0a0804;
+    }
+
+    /* ── Section labels ── */
+    .section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .section-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.45em;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+    }
+
+    /* ── Common SVG helpers ── */
+    .drop-shadow {
+      filter: drop-shadow(0 0 24px rgba(200,168,76,0.18));
+    }
+
+    /* ════════════════════════════════════════════
+       ARTBOARD 1 — LOGO MARK  (480 × 480)
+    ════════════════════════════════════════════ */
+    .logo-artboard {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .wordmark {
+      text-align: center;
+      line-height: 1;
+    }
+
+    .wordmark-sidereus {
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.7em;
+      color: var(--gold);
+      opacity: 0.75;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .wordmark-nuncius {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 2.6rem;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      color: var(--parchment);
+      text-shadow:
+        0 0 60px rgba(200,168,76,0.22),
+        0 0 20px rgba(200,168,76,0.08);
+      display: block;
+    }
+
+    .wordmark-sub {
+      font-family: 'EB Garamond', serif;
+      font-style: italic;
+      font-size: 0.88rem;
+      color: var(--ink-soft);
+      letter-spacing: 0.06em;
+      margin-top: 0.6rem;
+      display: block;
+    }
+
+    /* ════════════════════════════════════════════
+       ARTBOARD 2 — COVER  (1200 × 630)
+    ════════════════════════════════════════════ */
+    .cover-artboard {
+      width: 1200px;
+      height: 630px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(110,88,40,0.5);
+      /* atmospheric background */
+      background:
+        radial-gradient(ellipse 55% 90% at 72% 48%, rgba(180,130,44,0.10) 0%, transparent 65%),
+        radial-gradient(ellipse 35% 55% at 18% 52%, rgba(140,24,24,0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 100% 100% at 50% 50%, #100e09 0%, #070503 100%);
+    }
+
+    /* Scan-line grain */
+    .cover-artboard::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,0.018) 3px,
+        rgba(0,0,0,0.018) 4px
+      );
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Left edge vignette */
+    .cover-artboard::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(7,5,3,0.55) 0%, transparent 35%, transparent 65%, rgba(7,5,3,0.3) 100%);
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    /* ── Cover text zone ── */
+    .cover-text {
+      position: absolute;
+      left: 76px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 20;
+      width: 460px;
+    }
+
+    .cover-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.55em;
+      color: var(--gold);
+      text-transform: uppercase;
+      opacity: 0.8;
+      margin-bottom: 1.4rem;
+    }
+
+    .cover-title-sidereus {
+      font-family: 'Cinzel', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: 0.55em;
+      color: var(--gold);
+      opacity: 0.7;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    .cover-title-nuncius {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 5.8rem;
+      font-weight: 900;
+      line-height: 0.88;
+      color: var(--parchment);
+      letter-spacing: 0.04em;
+      text-shadow:
+        0 0 100px rgba(200,168,76,0.20),
+        0 0 40px  rgba(200,168,76,0.10),
+        0 2px 4px rgba(0,0,0,0.8);
+      display: block;
+      margin-bottom: 2rem;
+    }
+
+    .cover-rule {
+      width: 220px;
+      height: 1px;
+      background: linear-gradient(90deg, var(--gold) 0%, rgba(200,168,76,0.1) 100%);
+      margin-bottom: 1.75rem;
+    }
+
+    .cover-tagline {
+      font-family: 'EB Garamond', serif;
+      font-style: italic;
+      font-size: 1.25rem;
+      line-height: 1.5;
+      color: var(--ink);
+      margin-bottom: 0.8rem;
+    }
+
+    .cover-latin {
+      font-family: 'EB Garamond', serif;
+      font-style: italic;
+      font-size: 0.85rem;
+      color: var(--gold-lo);
+      letter-spacing: 0.06em;
+      opacity: 0.85;
+      margin-bottom: 2.5rem;
+    }
+
+    .cover-badges {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-family: 'Cinzel', serif;
+      font-size: 0.5rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      border: 1px solid rgba(110,88,40,0.45);
+      padding: 0.28rem 0.55rem;
+      background: rgba(10,8,4,0.4);
+    }
+
+    /* ── Cover top-right badge ── */
+    .cover-event {
+      position: absolute;
+      top: 32px;
+      right: 44px;
+      z-index: 20;
+      text-align: right;
+    }
+
+    .cover-event-name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.4em;
+      color: var(--gold);
+      text-transform: uppercase;
+      opacity: 0.75;
+      display: block;
+    }
+
+    .cover-event-date {
+      font-family: 'EB Garamond', serif;
+      font-style: italic;
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      display: block;
+    }
+
+    /* ── Cover bottom bar ── */
+    .cover-bottom {
+      position: absolute;
+      bottom: 26px;
+      left: 76px;
+      right: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 20;
+      border-top: 1px solid rgba(110,88,40,0.2);
+      padding-top: 10px;
+    }
+
+    .cover-chain-addr {
+      font-family: 'Cinzel', serif;
+      font-size: 0.5rem;
+      letter-spacing: 0.22em;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+    }
+
+    .cover-chain-addr strong {
+      color: var(--gold-lo);
+      font-weight: 600;
+    }
+
+    .cover-motto {
+      font-family: 'EB Garamond', serif;
+      font-style: italic;
+      font-size: 0.75rem;
+      color: rgba(110,88,40,0.65);
+    }
+
+    /* ════════════════════════════════════════════
+       ARTBOARD 3 — ICON TILE  (200 × 200)
+    ════════════════════════════════════════════ */
+    .icon-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 3rem;
+    }
+
+    /* Animations */
+    @keyframes star-pulse {
+      0%, 100% { opacity: 0.9; }
+      50%       { opacity: 0.5; }
+    }
+
+    @keyframes ring-breathe {
+      0%, 100% { opacity: 0.25; transform: scale(1);   }
+      50%       { opacity: 0.45; transform: scale(1.05); }
+    }
+
+    .pulse-1 { animation: star-pulse 3.2s ease-in-out infinite 0.0s; }
+    .pulse-2 { animation: star-pulse 3.2s ease-in-out infinite 0.64s; }
+    .pulse-3 { animation: star-pulse 3.2s ease-in-out infinite 1.28s; }
+    .pulse-4 { animation: star-pulse 3.2s ease-in-out infinite 1.92s; }
+    .pulse-5 { animation: star-pulse 3.2s ease-in-out infinite 2.56s; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     ARTBOARD 1 — LOGO MARK
+═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">Logo Mark — 480 × 480</div>
+  <div class="logo-artboard">
+
+    <svg width="480" height="480" viewBox="0 0 480 480"
+         xmlns="http://www.w3.org/2000/svg" class="drop-shadow">
+      <defs>
+        <!-- Background gradient -->
+        <radialGradient id="logo-bg" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stop-color="#1a1509"/>
+          <stop offset="70%"  stop-color="#100d07"/>
+          <stop offset="100%" stop-color="#070503"/>
+        </radialGradient>
+        <!-- Star glow -->
+        <filter id="logo-star-glow" x="-120%" y="-120%" width="340%" height="340%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <!-- Soft text glow -->
+        <filter id="logo-text-glow" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <!-- Line glow -->
+        <filter id="line-glow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <!-- Outer circle background -->
+      <circle cx="240" cy="240" r="232" fill="url(#logo-bg)"/>
+      <!-- Outer border ring -->
+      <circle cx="240" cy="240" r="232" fill="none" stroke="rgba(200,168,76,0.35)" stroke-width="1"/>
+      <!-- Second ring -->
+      <circle cx="240" cy="240" r="226" fill="none" stroke="rgba(200,168,76,0.10)" stroke-width="0.5"/>
+
+      <!-- Outer ring text path -->
+      <path id="ring-text-path"
+            d="M 240,240 m -205,0 a 205,205 0 1,1 410,0 a 205,205 0 1,1 -410,0"
+            fill="none"/>
+      <text font-family="Cinzel, serif" font-size="12.5"
+            fill="rgba(200,168,76,0.58)" letter-spacing="9.8">
+        <textPath href="#ring-text-path" startOffset="0%">
+          · NUNCIUS · SIDEREUS · MMXXVI · ETHGLOBAL · OPEN AGENTS ·&nbsp;&nbsp;&nbsp;
+        </textPath>
+      </text>
+
+      <!-- Inner concentric guide rings -->
+      <circle cx="240" cy="240" r="168" fill="none" stroke="rgba(200,168,76,0.07)" stroke-width="0.5"/>
+      <circle cx="240" cy="240" r="120" fill="none" stroke="rgba(200,168,76,0.06)" stroke-width="0.5" stroke-dasharray="4,6"/>
+      <circle cx="240" cy="240" r="60"  fill="none" stroke="rgba(200,168,76,0.07)" stroke-width="0.5"/>
+      <circle cx="240" cy="240" r="25"  fill="none" stroke="rgba(200,168,76,0.05)" stroke-width="0.5"/>
+
+      <!-- Faint crosshairs -->
+      <g stroke="rgba(200,168,76,0.06)" stroke-width="0.5">
+        <line x1="240" y1="40"  x2="240" y2="440"/>
+        <line x1="40"  y1="240" x2="440" y2="240"/>
+      </g>
+
+      <!--
+        Pentagon points (center 240,240  radius 156):
+          P1 Pythia  : (240, 84)          angle -90°
+          P2 Ziggy   : (388, 192)         angle -18°  → 240+156*0.951, 240-156*0.309
+          P3 Ada     : (331, 366)         angle  54°  → 240+156*0.588, 240+156*0.809
+          P4 Beto    : (149, 366)         angle 126°  → 240-156*0.588, 240+156*0.809
+          P5 Hypatia : ( 92, 192)         angle 198°  → 240-156*0.951, 240-156*0.309
+          156*0.951=148.4  156*0.309=48.2  156*0.588=91.7  156*0.809=126.2
+      -->
+
+      <!-- K5 mesh — all 10 edges with glow -->
+      <g filter="url(#line-glow)">
+        <g stroke="rgba(200,168,76,0.32)" stroke-width="0.9" fill="none">
+          <!-- Pentagon perimeter -->
+          <line x1="240" y1="84"  x2="388" y2="192"/>
+          <line x1="388" y1="192" x2="331" y2="366"/>
+          <line x1="331" y1="366" x2="149" y2="366"/>
+          <line x1="149" y1="366" x2="92"  y2="192"/>
+          <line x1="92"  y1="192" x2="240" y2="84"/>
+          <!-- Cross diagonals -->
+          <line x1="240" y1="84"  x2="331" y2="366"/>
+          <line x1="240" y1="84"  x2="149" y2="366"/>
+          <line x1="388" y1="192" x2="149" y2="366"/>
+          <line x1="388" y1="192" x2="92"  y2="192"/>
+          <line x1="331" y1="366" x2="92"  y2="192"/>
+        </g>
+      </g>
+
+      <!-- Star halos (animated rings) -->
+      <g fill="none" stroke="#fce898" stroke-width="0.8">
+        <circle cx="240" cy="84"  r="12" class="pulse-1" style="transform-origin:240px 84px"/>
+        <circle cx="388" cy="192" r="12" class="pulse-2" style="transform-origin:388px 192px"/>
+        <circle cx="331" cy="366" r="12" class="pulse-3" style="transform-origin:331px 366px"/>
+        <circle cx="149" cy="366" r="12" class="pulse-4" style="transform-origin:149px 366px"/>
+        <circle cx="92"  cy="192" r="12" class="pulse-5" style="transform-origin:92px 192px"/>
+      </g>
+
+      <!-- Stars (core dot with glow) -->
+      <g filter="url(#logo-star-glow)">
+        <circle cx="240" cy="84"  r="6.5" fill="#fce898" class="pulse-1"/>
+        <circle cx="388" cy="192" r="6.5" fill="#fce898" class="pulse-2"/>
+        <circle cx="331" cy="366" r="6.5" fill="#fce898" class="pulse-3"/>
+        <circle cx="149" cy="366" r="6.5" fill="#fce898" class="pulse-4"/>
+        <circle cx="92"  cy="192" r="6.5" fill="#fce898" class="pulse-5"/>
+      </g>
+
+      <!-- Persona name labels (italic, offset from star) -->
+      <g font-family="EB Garamond, serif" font-style="italic" fill="rgba(200,168,76,0.72)">
+        <text x="240" y="66"  text-anchor="middle"  font-size="11">Pythia</text>
+        <text x="404" y="190" text-anchor="start"   font-size="11">Ziggy</text>
+        <text x="343" y="386" text-anchor="start"   font-size="11">Ada</text>
+        <text x="137" y="386" text-anchor="end"     font-size="11">Capitán Beto</text>
+        <text x="76"  y="190" text-anchor="end"     font-size="11">Hypatia</text>
+      </g>
+
+      <!-- Central N monogram with soft glow -->
+      <g filter="url(#logo-text-glow)">
+        <text x="240" y="252"
+              text-anchor="middle" dominant-baseline="middle"
+              font-family="Cinzel Decorative, serif"
+              font-size="38" font-weight="700"
+              fill="#fce898" opacity="0.85"
+              letter-spacing="2">N</text>
+      </g>
+
+      <!-- Center point -->
+      <circle cx="240" cy="240" r="2.5" fill="rgba(252,232,152,0.45)"/>
+
+      <!-- ZK proof notation — minimal, near center -->
+      <text x="240" y="272" text-anchor="middle"
+            font-family="EB Garamond, serif" font-size="8.5" font-style="italic"
+            fill="rgba(200,168,76,0.30)" letter-spacing="1">π · Groth16 · BN254</text>
+
+    </svg>
+
+    <!-- Wordmark below mark -->
+    <div class="wordmark">
+      <span class="wordmark-sidereus">Sidereus</span>
+      <span class="wordmark-nuncius">NUNCIUS</span>
+      <span class="wordmark-sub">Anonymous coordination for AI agent swarms</span>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     ARTBOARD 2 — COVER IMAGE  (1200 × 630)
+═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">Cover Image — 1200 × 630</div>
+  <div class="cover-artboard">
+
+    <!-- Top-right event badge -->
+    <div class="cover-event">
+      <span class="cover-event-name">ETHGlobal OpenAgents</span>
+      <span class="cover-event-date">May 2026</span>
+    </div>
+
+    <!-- Left text zone -->
+    <div class="cover-text">
+      <div class="cover-eyebrow">0G Galileo · chainId 16602</div>
+      <span class="cover-title-sidereus">Sidereus</span>
+      <span class="cover-title-nuncius">NUN<br>CIUS</span>
+      <div class="cover-rule"></div>
+      <div class="cover-tagline">Anonymous coordination<br>for AI agent swarms</div>
+      <div class="cover-latin">Quinque stellæ · anonymæ · inviolabiles</div>
+      <div class="cover-badges">
+        <span class="badge">0G Chain</span>
+        <span class="badge">Semaphore V4</span>
+        <span class="badge">Gensyn AXL</span>
+        <span class="badge">ENS</span>
+        <span class="badge">Groth16</span>
+      </div>
+    </div>
+
+    <!--
+      Cover constellation SVG (right half)
+      SVG viewport 680×630, positioned absolute right:0
+      Center: (380, 315), radius 220
+
+      cos(-18°)=0.951  sin(-18°)=-0.309   220*0.951=209.2   220*0.309=68.0
+      cos( 54°)=0.588  sin( 54°)= 0.809   220*0.588=129.4   220*0.809=178.0
+
+      P1 Pythia:  (380, 95)                  angle -90°
+      P2 Ziggy:   (380+209, 315-68) = (589, 247)
+      P3 Ada:     (380+129, 315+178) = (509, 493)
+      P4 Beto:    (380-129, 315+178) = (251, 493)
+      P5 Hypatia: (380-209, 315-68) = (171, 247)
+    -->
+    <svg width="680" height="630" viewBox="0 0 680 630"
+         style="position:absolute; right:0; top:0; z-index:10;"
+         xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="cstar-glow" x="-150%" y="-150%" width="400%" height="400%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="cline-glow" x="-10%" y="-10%" width="120%" height="120%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="center-glow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <radialGradient id="cover-bg-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stop-color="rgba(180,130,44,0.06)"/>
+          <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+        </radialGradient>
+      </defs>
+
+      <!-- Soft warm glow behind constellation -->
+      <ellipse cx="380" cy="315" rx="300" ry="300" fill="url(#cover-bg-glow)"/>
+
+      <!-- Orbital/orrery guide circles -->
+      <g fill="none" stroke="rgba(200,168,76,0.055)" stroke-width="0.5">
+        <circle cx="380" cy="315" r="280"/>
+        <circle cx="380" cy="315" r="220"/>
+        <circle cx="380" cy="315" r="160"/>
+        <circle cx="380" cy="315" r="100"/>
+        <circle cx="380" cy="315" r="48"/>
+      </g>
+
+      <!-- Faint polar grid lines -->
+      <g stroke="rgba(200,168,76,0.04)" stroke-width="0.5">
+        <line x1="380" y1="5"   x2="380" y2="625"/>
+        <line x1="5"   y1="315" x2="675" y2="315"/>
+        <!-- 45° diagonals -->
+        <line x1="70"  y1="5"   x2="675" y2="600"/>
+        <line x1="675" y1="5"   x2="70"  y2="600"/>
+      </g>
+
+      <!-- K5 mesh lines with glow -->
+      <g filter="url(#cline-glow)">
+        <g stroke="rgba(200,168,76,0.28)" stroke-width="1.1" fill="none">
+          <!-- Pentagon perimeter -->
+          <line x1="380" y1="95"  x2="589" y2="247"/>
+          <line x1="589" y1="247" x2="509" y2="493"/>
+          <line x1="509" y1="493" x2="251" y2="493"/>
+          <line x1="251" y1="493" x2="171" y2="247"/>
+          <line x1="171" y1="247" x2="380" y2="95"/>
+          <!-- Cross diagonals -->
+          <line x1="380" y1="95"  x2="509" y2="493"/>
+          <line x1="380" y1="95"  x2="251" y2="493"/>
+          <line x1="589" y1="247" x2="251" y2="493"/>
+          <line x1="589" y1="247" x2="171" y2="247"/>
+          <line x1="509" y1="493" x2="171" y2="247"/>
+        </g>
+      </g>
+
+      <!-- Star pulse rings -->
+      <g fill="none" stroke="#fce898" stroke-width="1">
+        <circle cx="380" cy="95"  r="16" class="pulse-1" style="transform-origin:380px 95px"/>
+        <circle cx="589" cy="247" r="16" class="pulse-2" style="transform-origin:589px 247px"/>
+        <circle cx="509" cy="493" r="16" class="pulse-3" style="transform-origin:509px 493px"/>
+        <circle cx="251" cy="493" r="16" class="pulse-4" style="transform-origin:251px 493px"/>
+        <circle cx="171" cy="247" r="16" class="pulse-5" style="transform-origin:171px 247px"/>
+      </g>
+
+      <!-- Stars -->
+      <g filter="url(#cstar-glow)">
+        <circle cx="380" cy="95"  r="9" fill="#fce898" class="pulse-1"/>
+        <circle cx="589" cy="247" r="9" fill="#fce898" class="pulse-2"/>
+        <circle cx="509" cy="493" r="9" fill="#fce898" class="pulse-3"/>
+        <circle cx="251" cy="493" r="9" fill="#fce898" class="pulse-4"/>
+        <circle cx="171" cy="247" r="9" fill="#fce898" class="pulse-5"/>
+      </g>
+
+      <!-- Persona labels -->
+      <g font-family="EB Garamond, serif" font-style="italic"
+         fill="rgba(200,168,76,0.82)" font-size="14.5">
+        <text x="380" y="72"  text-anchor="middle">Pythia</text>
+        <text x="608" y="245" text-anchor="start">Ziggy</text>
+        <text x="524" y="517" text-anchor="start">Ada</text>
+        <text x="236" y="517" text-anchor="end">Capitán Beto</text>
+        <text x="152" y="245" text-anchor="end">Hypatia</text>
+      </g>
+
+      <!-- Proof index labels (tiny, near each star) -->
+      <g font-family="EB Garamond, serif" font-style="italic"
+         fill="rgba(200,168,76,0.35)" font-size="10">
+        <text x="380" y="115" text-anchor="middle">π₁</text>
+        <text x="591" y="268" text-anchor="start">π₂</text>
+        <text x="524" y="479" text-anchor="start">π₃</text>
+        <text x="235" y="479" text-anchor="end">π₄</text>
+        <text x="152" y="268" text-anchor="end">π₅</text>
+      </g>
+
+      <!-- Central verdict text -->
+      <g filter="url(#center-glow)">
+        <text x="380" y="307"
+              text-anchor="middle"
+              font-family="Cinzel Decorative, serif"
+              font-size="17" font-weight="700"
+              fill="rgba(252,232,152,0.65)"
+              letter-spacing="3">APPROBATVR</text>
+      </g>
+      <text x="380" y="330" text-anchor="middle"
+            font-family="EB Garamond, serif" font-size="12" font-style="italic"
+            fill="rgba(200,168,76,0.40)">3 – 2</text>
+
+      <!-- Semaphore protocol note -->
+      <text x="380" y="352" text-anchor="middle"
+            font-family="EB Garamond, serif" font-size="9.5" font-style="italic"
+            fill="rgba(200,168,76,0.22)" letter-spacing="0.5">
+        Σ · Semaphore V4 · BN254
+      </text>
+
+      <!-- Decorative arc at top edge of SVG -->
+      <path d="M 30,2 Q 380,-30 730,2"
+            fill="none" stroke="rgba(200,168,76,0.06)" stroke-width="1"/>
+
+    </svg>
+
+    <!-- Bottom bar -->
+    <div class="cover-bottom">
+      <div class="cover-chain-addr">
+        <strong>0G Galileo</strong> · DisputeDAO
+        <strong style="color:rgba(110,88,40,0.8); margin-left:0.5em;">
+          0x650c074910bC5855f6573f9d62EE5b8bA90664D9
+        </strong>
+      </div>
+      <div class="cover-motto">Quinque nodi · quinque probationes · nulla identitas</div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     ARTBOARD 3 — ICON TILES  (200 × 200 + 80 × 80)
+═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">Icon Tiles — 200 × 200 &amp; 80 × 80</div>
+  <div class="icon-row">
+
+    <!-- 200px icon -->
+    <svg width="200" height="200" viewBox="0 0 200 200"
+         xmlns="http://www.w3.org/2000/svg" class="drop-shadow">
+      <defs>
+        <radialGradient id="icon-bg-200" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stop-color="#1a1509"/>
+          <stop offset="100%" stop-color="#07050300"/>
+        </radialGradient>
+        <filter id="icon-sg-200" x="-100%" y="-100%" width="300%" height="300%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <circle cx="100" cy="100" r="98" fill="url(#icon-bg-200)"/>
+      <circle cx="100" cy="100" r="98" fill="none" stroke="rgba(200,168,76,0.4)" stroke-width="1"/>
+      <!-- Orbital rings -->
+      <circle cx="100" cy="100" r="72" fill="none" stroke="rgba(200,168,76,0.07)" stroke-width="0.5"/>
+      <circle cx="100" cy="100" r="44" fill="none" stroke="rgba(200,168,76,0.05)" stroke-width="0.5" stroke-dasharray="2,4"/>
+      <!--
+        radius 65:
+        P1: (100, 35)
+        P2: (100+62,100-20)=(162,80)   65*0.951=61.8  65*0.309=20.1
+        P3: (100+38,100+53)=(138,153)  65*0.588=38.2  65*0.809=52.6
+        P4: (100-38,100+53)=(62,153)
+        P5: (100-62,100-20)=(38,80)
+      -->
+      <g stroke="rgba(200,168,76,0.30)" stroke-width="0.7" fill="none">
+        <line x1="100" y1="35" x2="162" y2="80"/>
+        <line x1="162" y1="80" x2="138" y2="153"/>
+        <line x1="138" y1="153" x2="62" y2="153"/>
+        <line x1="62"  y1="153" x2="38" y2="80"/>
+        <line x1="38"  y1="80"  x2="100" y2="35"/>
+        <line x1="100" y1="35" x2="138" y2="153"/>
+        <line x1="100" y1="35" x2="62"  y2="153"/>
+        <line x1="162" y1="80" x2="62"  y2="153"/>
+        <line x1="162" y1="80" x2="38"  y2="80"/>
+        <line x1="138" y1="153" x2="38" y2="80"/>
+      </g>
+      <g filter="url(#icon-sg-200)">
+        <circle cx="100" cy="35"  r="4" fill="#fce898" class="pulse-1"/>
+        <circle cx="162" cy="80"  r="4" fill="#fce898" class="pulse-2"/>
+        <circle cx="138" cy="153" r="4" fill="#fce898" class="pulse-3"/>
+        <circle cx="62"  cy="153" r="4" fill="#fce898" class="pulse-4"/>
+        <circle cx="38"  cy="80"  r="4" fill="#fce898" class="pulse-5"/>
+      </g>
+      <text x="100" y="107" text-anchor="middle" dominant-baseline="middle"
+            font-family="Cinzel Decorative, serif" font-size="18" font-weight="700"
+            fill="#fce898" opacity="0.8">N</text>
+    </svg>
+
+    <!-- 80px icon -->
+    <svg width="80" height="80" viewBox="0 0 80 80"
+         xmlns="http://www.w3.org/2000/svg" class="drop-shadow">
+      <defs>
+        <radialGradient id="icon-bg-80" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stop-color="#1a1509"/>
+          <stop offset="100%" stop-color="#070503"/>
+        </radialGradient>
+        <filter id="icon-sg-80" x="-100%" y="-100%" width="300%" height="300%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <circle cx="40" cy="40" r="39" fill="url(#icon-bg-80)"/>
+      <circle cx="40" cy="40" r="39" fill="none" stroke="rgba(200,168,76,0.45)" stroke-width="1"/>
+      <!--
+        radius 26:
+        P1: (40,14)  P2: (40+24.7,40-8)=(65,32)  P3: (40+15,40+21)=(55,61)
+        P4: (25,61)  P5: (16,32)
+        26*0.951=24.7  26*0.309=8  26*0.588=15.3  26*0.809=21
+      -->
+      <g stroke="rgba(200,168,76,0.28)" stroke-width="0.6" fill="none">
+        <line x1="40" y1="14" x2="65" y2="32"/>
+        <line x1="65" y1="32" x2="55" y2="61"/>
+        <line x1="55" y1="61" x2="25" y2="61"/>
+        <line x1="25" y1="61" x2="16" y2="32"/>
+        <line x1="16" y1="32" x2="40" y2="14"/>
+        <line x1="40" y1="14" x2="55" y2="61"/>
+        <line x1="40" y1="14" x2="25" y2="61"/>
+        <line x1="65" y1="32" x2="25" y2="61"/>
+        <line x1="65" y1="32" x2="16" y2="32"/>
+        <line x1="55" y1="61" x2="16" y2="32"/>
+      </g>
+      <g filter="url(#icon-sg-80)">
+        <circle cx="40" cy="14" r="2.5" fill="#fce898" class="pulse-1"/>
+        <circle cx="65" cy="32" r="2.5" fill="#fce898" class="pulse-2"/>
+        <circle cx="55" cy="61" r="2.5" fill="#fce898" class="pulse-3"/>
+        <circle cx="25" cy="61" r="2.5" fill="#fce898" class="pulse-4"/>
+        <circle cx="16" cy="32" r="2.5" fill="#fce898" class="pulse-5"/>
+      </g>
+      <text x="40" y="43" text-anchor="middle" dominant-baseline="middle"
+            font-family="Cinzel Decorative, serif" font-size="9" font-weight="700"
+            fill="#fce898" opacity="0.8">N</text>
+    </svg>
+
+    <!-- 32px icon (favicon) -->
+    <svg width="32" height="32" viewBox="0 0 32 32"
+         xmlns="http://www.w3.org/2000/svg">
+      <circle cx="16" cy="16" r="15.5" fill="#100d07"/>
+      <circle cx="16" cy="16" r="15.5" fill="none" stroke="rgba(200,168,76,0.5)" stroke-width="0.8"/>
+      <!--
+        radius 11:
+        P1: (16,5)   P2: (16+10.5,16-3.4)=(26.5,12.6)  P3: (16+6.5,16+8.9)=(22.5,24.9)
+        P4: (9.5,24.9)  P5: (5.5,12.6)
+      -->
+      <g stroke="rgba(200,168,76,0.35)" stroke-width="0.6" fill="none">
+        <line x1="16" y1="5" x2="26.5" y2="12.6"/>
+        <line x1="26.5" y1="12.6" x2="22.5" y2="24.9"/>
+        <line x1="22.5" y1="24.9" x2="9.5"  y2="24.9"/>
+        <line x1="9.5"  y1="24.9" x2="5.5"  y2="12.6"/>
+        <line x1="5.5"  y1="12.6" x2="16"   y2="5"/>
+        <line x1="16" y1="5" x2="22.5" y2="24.9"/>
+        <line x1="16" y1="5" x2="9.5"  y2="24.9"/>
+        <line x1="26.5" y1="12.6" x2="9.5" y2="24.9"/>
+        <line x1="26.5" y1="12.6" x2="5.5" y2="12.6"/>
+        <line x1="22.5" y1="24.9" x2="5.5" y2="12.6"/>
+      </g>
+      <circle cx="16"   cy="5"    r="1.5" fill="#fce898"/>
+      <circle cx="26.5" cy="12.6" r="1.5" fill="#fce898"/>
+      <circle cx="22.5" cy="24.9" r="1.5" fill="#fce898"/>
+      <circle cx="9.5"  cy="24.9" r="1.5" fill="#fce898"/>
+      <circle cx="5.5"  cy="12.6" r="1.5" fill="#fce898"/>
+      <text x="16" y="17.5" text-anchor="middle" dominant-baseline="middle"
+            font-family="serif" font-size="5" font-weight="700"
+            fill="#fce898" opacity="0.7">N</text>
+    </svg>
+
+  </div>
+</div>
+
+</body>
+</html>

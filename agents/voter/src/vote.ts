@@ -16,6 +16,8 @@ export interface CastResult {
   totalElapsedMs: number;
   decision: "Approve" | "Reject";
   agentWalletAddress: string;
+  alreadyVoted?: boolean;
+  alreadyResolved?: boolean;
 }
 
 export async function castAnonymousVote(
@@ -60,5 +62,7 @@ export async function castAnonymousVote(
     totalElapsedMs: Date.now() - t0,
     decision,
     agentWalletAddress: signer.address,
+    alreadyVoted: onchain.alreadyVoted,
+    alreadyResolved: onchain.alreadyResolved,
   };
 }
